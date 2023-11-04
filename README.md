@@ -11,5 +11,5 @@ In the deep abyss of space, there appear hordes of enemy spaceships coming to co
 
  
 ## Stakeholders and Intended Users   
-	- The intended users for this project are individuals who are looking to casually play a game inspired by Space Invaders and Galaga. Some familiarity with simple video game control schemes (etc. arrow keys, WASD) is expected, but other than that anyone should be able to pick the project up for a fun gaming experience.
-	- Some stakeholders for this project are us (the developers whose grades are based on the quality of the project), the TA and the professor for this class (the people who will be playing this project and who will be grading it), and anyone who plays the game.
+- The intended users for this project are individuals who are looking to casually play a game inspired by Space Invaders and Galaga. Some familiarity with simple video game control schemes (etc. arrow keys, WASD) is expected, but other than that anyone should be able to pick the project up for a fun gaming experience.    
+- Some stakeholders for this project are us (the developers whose grades are based on the quality of the project), the TA and the professor for this class (the people who will be playing this project and who will be grading it), and anyone who plays the game.   
