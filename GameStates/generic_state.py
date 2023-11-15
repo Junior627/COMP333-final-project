@@ -6,6 +6,7 @@ done- used to determine if the game should continue in the current state.
 quit- used to determine if the game should continue running.
 next_state- used to determine the next state the game should transition to.
 screen_rect- used to determine the dimensions of the current screen.
+font- used to determine the font being used.
 '''
 
 class generic_state:
@@ -14,6 +15,7 @@ class generic_state:
         self.quit = False
         self.next_state = None
         self.screen_rect = pygame.display.get_surface().get_rect()
+        self.font = pygame.font.Font(None, 32)
 
     def startup(self):
         '''Placeholder code for state specific initialization
