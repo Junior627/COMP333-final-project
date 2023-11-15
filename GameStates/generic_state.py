@@ -11,6 +11,10 @@ font- used to determine the font being used.
 
 class generic_state:
     def __init__(self):
+        '''
+        Font should be taken from the files directory       
+        '''
+        
         self.done = False
         self.quit = False
         self.next_state = None

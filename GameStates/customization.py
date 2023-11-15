@@ -30,10 +30,13 @@ class customization(generic_state):
 
     def customization_selection(self):
         '''Placeholder code for engine/weapon selection
+        Each engine should have a different movement speed
+        Each weapon should have a different bullet speed 
         '''
         self.quit = True
 
     def draw(self, surface):
         '''Placeholder code for screen display
+        Depending on the combination of engine and weapon, we pull the appropiate sprite from the files
         '''
         pass
