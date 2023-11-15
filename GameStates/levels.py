@@ -6,9 +6,9 @@ Specific attributes:
 current_level- the index of the current level the user is hovering over.
 '''
 
-class menu(generic_state):
+class levels(generic_state):
     def __init__(self):
-        super(menu, self).__init__()
+        super(levels, self).__init__()
         self.current_levels = 1
         self.next_state = "customization"
     
