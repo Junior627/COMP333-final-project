@@ -9,9 +9,9 @@ options_engine- a list of the total engine options.
 options_weapon- a list of the total weapon options.
 '''
 
-class menu(generic_state):
+class customization(generic_state):
     def __init__(self):
-        super(menu, self).__init__()
+        super(customization, self).__init__()
         self.current_engine = 1
         self.current_weapon = 1
         self.options_engine = ["engine 1", "engine 2", "engine 3"]
