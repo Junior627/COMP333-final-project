@@ -211,10 +211,10 @@ class enemyBullet:
         self.pos = [initial_pos[0], initial_pos[1]] 
         self.target_pos = [ target_pos[0],target_pos[1]]
         # Math to figure out what direction the bullet should go
-        self.bullet = image.load(sprite)
+        self.bullet = image.load(self.sprite)
         self.bullet_dir = [(self.target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((self.target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
         
-        self.bullet_collider = self.shooter.get_rect()
+        self.bullet_collider = self.bullet.get_rect()
         pass
     def update(self):
         ''' This will update the bullet's position as it heads towards the self.target_pos 
@@ -235,18 +235,20 @@ class enemyBomb:
             target_pos: An array of integer values that will be ideally the position of the player ( the value is static )
             
         '''
-        self.sprite = image.load(sprite) # Given a string, the bomb will load as the sprite image
+        self.sprite = 'bomb.png' # Given a string, the bomb will load as the sprite image
         self.speed = 1 # An Integer value used to dictate how fast the bomb should move
         self.pos = [initial_pos[0], initial_pos[1]] 
         self.target_pos = [ initial_pos[0],target_pos[1]] # Drops down to player's Y positiom
         # Math to figure out what direction the bullet should go
-        self.bullet_dir = [(self.target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((self.target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
         
+        self.bomb_dir = [(self.target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((self.target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
+        self.bomb = image.load(self.sprite)
+        self.bomb_collider = self.bomb.get_rect()
         pass
     
     def update(self):
-        ''' This will update the bullet's position as it heads towards the self.target_pos 
-        by multiplying self.bullet_dir and self.speed and adding it to self.pos
+        ''' This will update the bomb's position as it heads towards the self.target_pos 
+        by multiplying self.bomb_dir and self.speed and adding it to self.pos
         
         Once the enemy has reached their destination or touched the border, we call self.explode()
         '''
@@ -271,4 +273,19 @@ class enemyBomb:
         
     
 def unit_tests():
+    
+    ''' Unit tests for enemy.py would include:
+    
+    When an enemy is created, we check to see if the enemy is on screen / in the enemy array
+        If so, we passed
+        Else, the enemy hasn't spawned and we don't things to shoot :/
+        
+    We can check if the bullets/ bombs are spawned and are on screen
+        If so, we passed
+    
+    We can also do unit tests to check if the files being called by the classes exist.
+        We run a test at the beginning to check if all files can be called / exist
+
+    '''
+    
     pass
