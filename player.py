@@ -20,8 +20,8 @@ class Player:
         self.shoot_sprites = ['..\player_shoot.png']
         self.shoot_move = ['..\player_move.png']
         
-        self.speed =  1 # This value will change depending on customizationInfo.current_engine ( we can use if-else for this )
-        self.bullet_speed = 1 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
+        self.speed =  3 # This value will change depending on customizationInfo.current_engine ( we can use if-else for this )
+        self.bullet_speed = 5 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
         self.bullet_cooldown = 100 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
         
         self.player = image.load(self.idle_sprites[0])
@@ -46,6 +46,10 @@ class Player:
         
         For instance, this will countdown the self.bullet_cooldown to 0 and stopping there
         '''
+        if(self.bullet_cooldown >0):
+            self.bullet_cooldown-= 1
+            
+        
     def movement(self, dir):
         ''' Called when the player touches a directional key or WASD
         Args: dir : An array of 2 elements we add to self.pos       
@@ -71,10 +75,12 @@ class playerBullet:
         '''
         Updates the playerBullet's position
         '''
-        self.pos -= [0, 1] # It takes away 1 since we want the bullet to go straight up
+        self.pos -= [0, (self.bullet_speed)] # It takes away 1 since we want the bullet to go straight up
+        
         pass
     def destroy(self):
         '''The bullet will destroy itself if it hits an enemy or an edge of the screen.'''
+        
         pass
     
 def unit_tests():

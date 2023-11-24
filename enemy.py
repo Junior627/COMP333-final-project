@@ -17,7 +17,7 @@ from pygame import *
 class Shooter:
     ''' This creates an instance of the Shooter enemy
     '''
-    def __init__(self):
+    def __init__(self, x,y , player_class):
         '''
         This will initilize the Shooter Enemy and store information
         such as:
@@ -26,13 +26,17 @@ class Shooter:
             Time value to determine how long to shoot their next bullets ( cooldown)
             Values such as movement speed 
         '''
-        self.pos = [0 , 0] # Keeps track of the enemy's position on screen
+        self.pos = [x , y] # Keeps track of the enemy's position on screen
+        self.destination_pos = [x + 0,y] # The destination x,y coordinates where the enemy wants to go
+        
         self.idle_sprites = ['..\shooter_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
         self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
         self.speed = 1
         self.bullet_speed = 1
         self.bullet_cooldown = 100
         self.movement_cooldown = 40
+        
+        self.target = player_class # This should be the player class that gets initiated in gameloop
         
         self.shooter = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.shooter_collider = self.shooter.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
@@ -58,6 +62,9 @@ class Shooter:
         
         '''
         
+        new_bullet = enemyBullet(self.pos , target_pos)
+        return new_bullet
+        
     def update(self):
         ''' This will hold all of the Shooter's functions and be the logic the Shooter will follow
         
@@ -68,19 +75,38 @@ class Shooter:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
-    
+        
+        if self.bullet_cooldown >0 or self.movement_cooldown >0 :
+            self.bullet_cooldown -= 1
+            self.movement_cooldown -= 1
+        
+        if self.bullet_cooldown == 0 :
+            self.shootBullet(self.target.pos)
+
+        if self.movement_cooldown == 0 :
+            self.movement()
+            
+            
+            
+        # Replace this with the pygame.display from the main gameloop!    
+        display.set_mode(10).blit(self.shooter , self.shooter_collider) 
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
         This destroys the enemy instance and plays an explosion sprite over the gone enemy 
         
         '''
+        
+         
         pass
+    
+    def __del__(self):
+        print('Shooter Destroyed!')
     
 class Chaser:
     ''' This creates an instance of the Chaser enemy
     
     '''
-    def __init__(self):
+    def __init__(self , x , y):
         '''
         This will initilize the Chaser Enemy and store information
         such as:
@@ -89,7 +115,10 @@ class Chaser:
             Time value to determine how long to attack again ( cooldown)
             Values such as movement speed 
         '''
-        self.pos = [0 , 0] # Keeps track of the enemy's position on screen
+        self.pos = [x , y] # Keeps track of the enemy's position on screen
+        self.original_pos [self.pos[0], self.pos[1]]
+        self.path_arr = [] # Used to keep the pathfinding values for the enemy
+        
         self.idle_sprites = ['..\chaser_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
         self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
         self.speed = 2
@@ -103,10 +132,27 @@ class Chaser:
         The target_pos is the Player's position
         
         Returns an array of x,y coordinates
+        
+        Visualize Path
+            Once Chaser begins to attack,
+                They will make a curve upwards ( this should be fixed)
+                    *
+                *       *
+                - - - - V - - - -
+                |               |
+                |               |
+                |               |
+                |               |
+                - - - - ^ - - - -
+                
+                Once they finish this curve, they will charge at the player's position 
+                ( this will be static and not update if the player moves after the chaser goes on the chase)
         '''
+        
+        
         pass
     
-    def movement(self):
+    def movement(self, target_pos):
         '''
         For the chaser, we want the enemy to swoop to attack the player. ( This path will be created using createPath())
         This function will loop over the path made from createPath
@@ -115,6 +161,10 @@ class Chaser:
         Within the loop, we will update the self.pos using the self.speed
         
         '''
+        
+        [(target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
+        
+        
         pass
         
     def update(self):
@@ -126,6 +176,17 @@ class Chaser:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
+        
+        if self.movement_cooldown >0:
+            self.movement_cooldown -=1
+            
+        if self.movement_cooldown == 0:
+            self.createPath()
+            
+        
+        # Replace this with the pygame.display from the main gameloop!    
+        display.set_mode(10).blit(self.chaser , self.chaser_collider) 
+        pass
     
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
@@ -173,6 +234,9 @@ class Bomber:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
+        
+        # Replace this with the pygame.display from the main gameloop!    
+        display.set_mode(10).blit(self.bomber , self.bomber_collider) 
     
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
@@ -208,11 +272,10 @@ class enemyBullet:
         '''
         self.sprite = 'bullet.png' # Given a string, the bullet will load as the sprite image
         self.speed = 1 # An Integer value used to dictate how fast the bullet should move
-        self.pos = [initial_pos[0], initial_pos[1]] 
-        self.target_pos = [ target_pos[0],target_pos[1]]
         # Math to figure out what direction the bullet should go
+        self.pos =  [initial_pos[0], initial_pos[1]]
         self.bullet = image.load(self.sprite)
-        self.bullet_dir = [(self.target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((self.target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
+        self.bullet_dir = [(target_pos[0]-initial_pos[0] ) / (max(initial_pos) - min(initial_pos)) , ((target_pos[1]-initial_pos[1] ) / (max(initial_pos) - min(initial_pos)))] 
         
         self.bullet_collider = self.bullet.get_rect()
         pass
@@ -221,6 +284,8 @@ class enemyBullet:
         by multiplying self.bullet_dir and self.speed and adding it to self.pos
         
         '''
+        self.pos += (self.bullet_dir * self.speed)
+        
         pass
     def destroy(self):
         '''The bullet will destroy itself if it hits the player or the edge of the screen.'''
@@ -252,9 +317,13 @@ class enemyBomb:
         
         Once the enemy has reached their destination or touched the border, we call self.explode()
         '''
+        
+        self.pos += ([0,-1] * self.speed)
+        
+        # Use level bounds to call explode()
         pass
     
-    def explode():
+    def explode(self):
         '''
         When called, we spawn bullets around the enemy in this formation:
         
@@ -269,7 +338,13 @@ class enemyBomb:
         
         After this logic is done, we finally destroy this enemyBomb instance
         '''
-        pass
+        spawnedBullet_0 = enemyBullet(self.pos , [self.pos[0]-1 , self.pos[1] -1])
+        spawnedBullet_1 = enemyBullet(self.pos , [self.pos[0]+1 , self.pos[1] -1])
+        spawnedBullet_2 = enemyBullet(self.pos , [self.pos[0]-1 , self.pos[1] +1])
+        spawnedBullet_3 = enemyBullet(self.pos , [self.pos[0]+1 , self.pos[1] +1])
+        
+        
+        return spawnedBullet_0 , spawnedBullet_1 , spawnedBullet_2 , spawnedBullet_3
         
     
 def unit_tests():
