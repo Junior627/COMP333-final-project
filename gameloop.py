@@ -31,13 +31,16 @@ class Game:
         '''
         pass
 
-    def draw(self, surface):
-        '''Placeholder code for screen display
+    def draw(self):
+        '''Code for screen display throughout all gamestates
         '''
-        pass
+        self.screen.fill((0, 0, 0))
+        self.state.draw(self.screen)
 
     def run(self):
-        '''Placeholder code for the pygame loop
+        '''Code for the full pygame loop
         '''
         while not self.done:
-            pass
+            self.draw()
+            pygame.display.update()
+            pygame.time.delay(1000)
