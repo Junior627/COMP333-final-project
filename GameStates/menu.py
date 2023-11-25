@@ -30,14 +30,18 @@ class menu(generic_state):
         return text.get_rect(center = center_location)
     
     def get_event(self, event):
-        '''Placeholder code for handling events
+        '''Code for handling events in the outer menu game state
         '''
-        pass
+        if event.type == pygame.QUIT:
+            self.quit = True
 
     def option_select(self):
-        '''Placeholder code for option selection
+        '''Code for option selection in the outer menu game state
         '''
-        self.quit = True
+        if self.current_option == 1:
+            self.quit = True
+        elif self.current_option == 0:
+            self.done = True
 
     def draw(self, surface):
         '''Code for screen display in the outer menu game state
