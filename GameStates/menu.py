@@ -23,6 +23,12 @@ class menu(generic_state):
             text_color = pygame.Color("white")
         return self.font.render(self.options[index], True, text_color)
     
+    def place_text(self, text, index):
+        '''Code for text placement
+        '''
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (100 * index))
+        return text.get_rect(center = center_location)
+    
     def get_event(self, event):
         '''Placeholder code for handling events
         '''
@@ -34,6 +40,9 @@ class menu(generic_state):
         self.quit = True
 
     def draw(self, surface):
-        '''Placeholder code for screen display
+        '''Code for screen display in the outer menu game state
         '''
-        pass
+        surface.fill(pygame.Color("midnightblue"))
+        for index in range(len(self.options)):
+            text_display = self.color_text(index)
+            surface.blit(text_display, self.place_text(text_display, index))
