@@ -1,7 +1,7 @@
 import pygame
 from .generic_state import generic_state
 
-'''Skeleton code for the menu game state upon initialization.
+'''Code for the menu game state upon initialization.
 Specific attributes:
 current_option- the index of the current menu option the user is hovering over.
 options- a list of the total menu options.
@@ -15,9 +15,13 @@ class menu(generic_state):
         self.next_state = "levels"
     
     def color_text(self, index):
-        '''Placeholder code for text coloration
+        '''Code for text coloration
         '''
-        return self.font.render(self.options[index], True, "white")
+        if index == self.current_option:
+            text_color = pygame.Color("cyan2")
+        else:
+            text_color = pygame.Color("white")
+        return self.font.render(self.options[index], True, text_color)
     
     def get_event(self, event):
         '''Placeholder code for handling events
