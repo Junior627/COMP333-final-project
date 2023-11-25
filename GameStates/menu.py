@@ -40,11 +40,11 @@ class menu(generic_state):
             if event.key == pygame.K_DOWN:
                 self.current_option = (self.current_option + 1) % len(self.options)
             if event.key == pygame.K_SPACE:
-                self.option_select()
+                self.select_option()
             if event.key == pygame.K_ESCAPE:
                 self.quit = True
 
-    def option_select(self):
+    def select_option(self):
         '''Code for option selection in the outer menu game state
         '''
         if self.current_option == 1:
