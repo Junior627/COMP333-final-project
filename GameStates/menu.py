@@ -11,7 +11,7 @@ class menu(generic_state):
     def __init__(self):
         super(menu, self).__init__()
         self.current_option = 0
-        self.options = ["Fight!", "Quit Game"]
+        self.options = ["Fight!", "Quit"]
         self.next_state = "levels"
     
     def color_text(self, index):
@@ -26,7 +26,7 @@ class menu(generic_state):
     def place_text(self, text, index):
         '''Code for text placement
         '''
-        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (100 * index))
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (50 * (index + 1)))
         return text.get_rect(center = center_location)
     
     def get_event(self, event):
