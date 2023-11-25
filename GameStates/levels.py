@@ -4,7 +4,7 @@ from .generic_state import generic_state
 
 '''Code for the menu game state upon level selection.
 Specific attributes:
-current_level- the current level the user is hovering over.
+current_level- the index of the current level the user is hovering over.
 unlocked_level- the final level the user has unlocked.
 ASSUMES A TOTAL LEVEL NUMBER OF 15.
 '''
@@ -12,7 +12,7 @@ ASSUMES A TOTAL LEVEL NUMBER OF 15.
 class levels(generic_state):
     def __init__(self):
         super(levels, self).__init__()
-        self.current_level = 1
+        self.current_level = 0
         self.unlocked_level = 15
 
         self.total_rows = 5
@@ -57,9 +57,9 @@ class levels(generic_state):
                 if (self.current_level) % self.total_rows == 0:
                     self.current_level -= self.total_rows
             if event.key == pygame.K_LEFT:
-                self.current_level -= 1
                 if (self.current_level) % self.total_rows == 0:
                     self.current_level += self.total_rows
+                self.current_level -= 1
             if event.key == pygame.K_SPACE:
                 self.select_level()
             if event.key == pygame.K_ESCAPE:
