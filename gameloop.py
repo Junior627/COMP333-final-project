@@ -21,15 +21,24 @@ class Game:
         self.state_name = start_state
         self.state = self.total_states[self.state_name]
 
-    def state_change(self):
-        '''Placeholder code for changing states
+    def change_state(self):
+        '''Code for changing the gamestate
         '''
-        pass
+        self.state_name = self.state.next_state
+        self.state = self.total_states[self.state_name]
+        
+        self.state.done = False
+
+        self.state.startup()
 
     def update(self, dt):
-        '''Placeholder code for state specific updates
+        '''Code for updating the gamestate
         '''
-        pass
+        if self.state.quit:
+            self.done = True
+        elif self.state.done:
+            self.change_state()
+        self.state.update(dt)
 
     def draw(self):
         '''Code for screen display throughout all gamestates
@@ -41,6 +50,11 @@ class Game:
         '''Code for the full pygame loop
         '''
         while not self.done:
+            dt = self.clock.tick(self.fps)
+            
+            for event in pygame.event.get():
+                self.state.get_event(event)
+
+            self.update(dt)
             self.draw()
             pygame.display.update()
-            pygame.time.delay(1000)
