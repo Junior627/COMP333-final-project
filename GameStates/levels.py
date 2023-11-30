@@ -31,7 +31,7 @@ class levels(generic_state):
             text_color = pygame.Color("darkgray")
         else:
             text_color = pygame.Color("white")
-        return self.font.render(str(level_number), True, text_color)
+        return self.regularfont.render(str(level_number), True, text_color)
     
     def place_text(self, text, index):
         '''Code for text placement

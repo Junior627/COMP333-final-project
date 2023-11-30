@@ -21,7 +21,7 @@ class menu(generic_state):
             text_color = pygame.Color("cyan2")
         else:
             text_color = pygame.Color("white")
-        return self.font.render(self.options[index], True, text_color)
+        return self.regularfont.render(self.options[index], True, text_color)
     
     def place_text(self, text, index):
         '''Code for text placement
