@@ -9,13 +9,13 @@ options_engine- a list of the total engine options.
 options_weapon- a list of the total weapon options.
 '''
 
-class customization(generic_state):
+class Customization(generic_state):
     def __init__(self):
-        super(customization, self).__init__()
+        super(Customization, self).__init__()
         self.current_engine = 1
         self.current_weapon = 1
-        self.options_engine = ["engine 1", "engine 2", "engine 3"]
-        self.options_weapon = ["weapon 1", "weapon 2", "weapon 3"]
+        self.options_engine = ["engine_1", "engine_2", "engine_3"]
+        self.options_weapon = ["weapon_1", "weapon_2", "weapon_3"]
         self.next_state = "shipgame"
     
     def color_text(self, index):

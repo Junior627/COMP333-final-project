@@ -1,6 +1,6 @@
 from pygame import *
 from GameStates import customization
-
+from constants import *
 '''
 This file will contain all logic for the player and how the player controls their ship
 
@@ -8,14 +8,16 @@ Currently using a test.py file to incorporate this stuff. Once the gameloop is f
 '''
 
 class Player:
-    def __init__(self , size):
+    def __init__(self ):
         ''' This will be used to instantiate the Player class. There should only be one at a time
         
         Args: customizationInfo , this will be the declared instance of customization() to get parameters such as current_engine and current_weapon
         
         '''
         
-        self.pos = [1,1]
+        self.pos = Vector2(SCREEN_WIDTH / 2 , (SCREEN_HEIGHT * 3) / 4)
+        self.pos.x = SCREEN_WIDTH / 2 
+        self.pos.y = (SCREEN_HEIGHT * 3) / 4
         
         # idle = "player"+customizationInfo.options_engine[customizationInfo.current_engine]+"_"+customizationInfo.options_weapon[customizationInfo.current_weapon]+"idle.png"
         idle = "Sprites\player_idle.png"
@@ -30,11 +32,11 @@ class Player:
         
         self.player = image.load(self.idle_sprites[0])
         self.player_collider  = self.player.get_rect()
-        self.dir= [0,0]
+        self.dir = Vector2()
+        self.dir.x = 0
+        self.dir.y = 0
         
-        # Parameters for pygame interactivity
-        self.size = size # Used to draw the character on screen
-        
+        # Parameters for pygame interactivity        
         pass
     
     def shoot(self):
@@ -46,7 +48,7 @@ class Player:
         if self.bullet_cooldown == 0:
             self.bullet_cooldown = 25
             print(self.pos)
-            return PlayerBullet([self.pos[0]+ (self.player_collider.width / 2), self.pos[1]], self.bullet_speed , self.size)
+            return PlayerBullet(Vector2(self.player_collider.centerx, self.pos.y), self.bullet_speed )
     
     def update(self, dir):
         '''
@@ -57,57 +59,53 @@ class Player:
         if(self.bullet_cooldown >0):
             self.bullet_cooldown-= 1
 
-        
-    
         self.movement(dir)
-        
+    
     def movement(self, dir):
         ''' Called when the player touches a directional key or WASD
         Args: dir : An array of 2 elements we add to self.pos       
         
         Include some logic to prevent the player from leaving the player bounds 
         '''
-        x_pos = self.speed * dir[0]
-        y_pos = self.speed * dir[1]
-
+        if dir.x !=0 and dir.y != 0:
+            dir.normalize_ip()
+        temp_pos = self.speed * dir
         # Update player position
-        new_x = self.pos[0] + x_pos
-        new_y = self.pos[1] + y_pos
-
+        new_pos = self.pos + temp_pos
         # Check if the new position is within the bounds of the screen
         if 0 > self.player_collider.left:
-            self.pos[0] = 0
-        elif self.size[0] < self.player_collider.right:
-            self.pos[0] = self.size[0] - self.player_collider.width
+            self.pos.x = 0
+        elif SCREEN_WIDTH < self.player_collider.right:
+            self.pos.x = SCREEN_WIDTH - self.player_collider.width
         else:
-            self.pos[0] = new_x
+            self.pos.x = new_pos.x
             
-        if 0 > self.player_collider.top :
-            self.pos[1] = 0
-        elif self.size[1] < self.player_collider.bottom :
-            self.pos[1] = self.size[1] - self.player_collider.height
+        if SCREEN_HEIGHT / 2 > self.player_collider.top :
+            self.pos.y = SCREEN_HEIGHT / 2
+        elif SCREEN_HEIGHT < self.player_collider.bottom :
+            self.pos.y = SCREEN_HEIGHT - self.player_collider.height
         else:
-            self.pos[1] = new_y
+            self.pos.y = new_pos.y
             
             
 
         # Update player collider based on the new position
-        self.player_collider = self.player_collider.move(self.pos[0] - self.player_collider.x, self.pos[1] - self.player_collider.y)
+        self.player_collider = self.player_collider.move(self.pos.x - self.player_collider.x, self.pos.y - self.player_collider.y)
 
         pass
-
-        
     
 class PlayerBullet:
-    def __init__(self, initial_pos , bullet_speed, size):
+    def __init__(self, initial_pos , bullet_speed):
         ''' Create an instance
         
         '''
-        self.size = size
-        self.pos = initial_pos 
+        self.pos = Vector2(initial_pos )
         self.bullet_speed = bullet_speed
         self.bullet = image.load('Sprites\player_bullet.png') # Make sure this is the appropiate filepath for player's bullet
         self.bullet_collider = self.bullet.get_rect()
+        self.bullet_dir = Vector2()
+        self.bullet_dir.x = 0
+        self.bullet_dir.y = 1
         print("Created at", self.pos)
         pass
     def update(self):
@@ -115,8 +113,10 @@ class PlayerBullet:
         Updates the PlayerBullet's position
         '''
         
-        self.pos = [self.pos[0], (self.pos[1] - self.bullet_speed)] # It takes away 1 since we want the bullet to go straight up
-        self.bullet_collider = self.bullet_collider.move(self.pos[0] - self.bullet_collider.x, self.pos[1] - self.bullet_collider.y)
+        self.pos.y -=  ( self.bullet_speed) # It takes away 1 since we want the bullet to go straight up
+        self.bullet_collider = self.bullet_collider.move(self.pos.x - self.bullet_collider.x, self.pos.y - self.bullet_collider.y)
+    def out_of_bounds(self):
+        return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     def __del__(self):
         '''The bullet will destroy itself if it hits an enemy or an edge of the screen.'''
         print('Bullet Gone!')
