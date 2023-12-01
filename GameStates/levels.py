@@ -91,7 +91,10 @@ class levels(generic_state):
     def select_level(self):
         '''Placeholder code for level selection
         '''
-        self.quit = True
+        self.done = True
+
+    def startup(self):
+        self.next_state = "customization"
 
     def draw(self, surface):
         '''Code for screen display in the level selection menu game state
