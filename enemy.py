@@ -19,7 +19,7 @@ from random import *
 class Shooter:
     ''' This creates an instance of the Shooter enemy
     '''
-    def __init__(self, x,y , player_class):
+    def __init__(self, x,y ):
         '''
         This will initilize the Shooter Enemy and store information
         such as:
@@ -28,7 +28,7 @@ class Shooter:
             Time value to determine how long to shoot their next bullets ( cooldown)
             Values such as movement speed 
         '''
-        self.pos = [x , y] # Keeps track of the enemy's position on screen
+        self.pos = Vector2(x,y)# Keeps track of the enemy's position on screen
         self.destination_pos = [x + 0,y] # The destination x,y coordinates where the enemy wants to go
         
         self.idle_sprites = ['Sprites\shooter_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
@@ -37,11 +37,9 @@ class Shooter:
         self.bullet_speed = 1
         self.bullet_cooldown = 150
         self.movement_cooldown = 40
-        
-        self.target = player_class # This should be the player class that gets initiated in gameloop
-        
-        self.shooter = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
-        self.shooter_collider = self.shooter.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
+                
+        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     
     def movement(self):
@@ -53,7 +51,7 @@ class Shooter:
         This will update the Shooter.pos using the Shooter.speed
         
         '''
-        self.movement_cooldown  = 500
+        self.movement_cooldown  = 350 + randint(-25 , 150)
         pass
     def shootBullet(self, target_pos):
         '''When called, this will shoot a bullet instance towards the player's position when self.bullet_cooldown is 0
@@ -64,8 +62,8 @@ class Shooter:
         Ideally, we would add this to a bullet array that is updated in the game framework (so when the enemy dies, the bullet doesn't disappear)
         
         '''
-        self.bullet_cooldown = 150
-        return EnemyBullet([self.pos[0] + (self.shooter_collider.width / 2),self.pos[1]+ self.shooter_collider.height/2], target_pos)
+        self.bullet_cooldown = 150 + randint(-50 , 50)
+        return EnemyBullet(Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2), target_pos)
         
     def update(self):
         ''' This will hold all of the Shooter's functions and be the logic the Shooter will follow
@@ -87,9 +85,9 @@ class Shooter:
             self.movement()
         pass
             
-            
+        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
         # Replace this with the pygame.display from the main gameloop!    
-        # display.set_mode(10).blit(self.shooter , self.shooter_collider) 
+        # display.set_mode(10).blit(self.entity , self.entity_collider) 
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
         This destroys the enemy instance and plays an explosion sprite over the gone enemy 
@@ -124,8 +122,8 @@ class Chaser:
         self.speed = 2
         self.movement_cooldown = 50
         
-        self.chaser = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
-        self.chaser_collider = self.chaser.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
+        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     def createPath(self, target_pos):
         ''' Creates an array of position values for the enemy to follow 
@@ -185,7 +183,7 @@ class Chaser:
             
         
         # Replace this with the pygame.display from the main gameloop!    
-        display.set_mode(10).blit(self.chaser , self.chaser_collider) 
+        display.set_mode(10).blit(self.entity , self.entity_collider) 
         pass
     
     def destroy(self):
@@ -199,7 +197,7 @@ class Bomber:
     ''' This creates an instance of the Bomber enemy
     
     '''
-    def __init__(self):
+    def __init__(self, x, y):
         '''
         This will initilize the Bomber Enemy and store information
         such as:
@@ -208,15 +206,15 @@ class Bomber:
             Time value to determine how long to shoot their next bullets ( cooldown)
             Values such as movement speed 
         '''
-        self.pos = [0 , 0] # Keeps track of the enemy's position on screen
-        self.idle_sprites = ['..\bomber_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
-        self.shoot_sprites = ['..\bomber_shoot_1.png','..\bomber_shoot_2.png' ]
+        self.pos = Vector2(x,y)# Keeps track of the enemy's position on screen
+        self.idle_sprites = [r"Sprites\bomber_idle.png"] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.shoot_sprites = [r'Sprites\bomber_shoot_1.png',r'Sprites\bomber_shoot_2.png' ]
         self.speed = 0 
         self.bullet_speed = 1
-        self.bullet_cooldown = 600
+        self.bullet_cooldown = 200
         
-        self.bomber = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
-        self.bomber_collider = self.bomber.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
+        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
      
     def shootBomb(self, target_pos):
@@ -227,7 +225,9 @@ class Bomber:
         Returns : Returns nothing as it is creating a new instance of the class EnemyBomb
         
         '''
-        
+        self.bullet_cooldown = 200 + randint(-25 , 100)
+        og_pos = Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2)
+        return EnemyBomb( og_pos , target_pos)
     def update(self):
         ''' This will hold all of the Bomber's functions and be the logic the Shooter will follow
         
@@ -237,12 +237,8 @@ class Bomber:
         if self.bullet_cooldown >0:
             self.bullet_cooldown -= 1
         
-        if self.bullet_cooldown == 0 :
-            self.shootBomb(self.target.pos)
-        
-        # Replace this with the pygame.display from the main gameloop!    
-        display.set_mode(10).blit(self.bomber , self.bomber_collider) 
-    
+        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        # Replace this with the pygame.display from the main gameloop!        
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
         This destroys the enemy instance and plays an explosion sprite over the gone enemy 
@@ -280,7 +276,7 @@ class EnemyBullet:
         # Math to figure out what direction the bullet should go
         self.pos = Vector2()
         self.pos.x = initial_pos[0] + randint(-10,10)
-        self.pos.y = initial_pos[1] 
+        self.pos.y = initial_pos[1]
         
         self.bullet = image.load(self.sprite)
         
@@ -295,8 +291,8 @@ class EnemyBullet:
         by multiplying self.bullet_dir and self.speed and adding it to self.pos
         
         '''
-        self.pos = [self.pos[0] + (self.bullet_dir[0] * self.speed) , self.pos[1] + (self.bullet_dir[1] * self.speed)]
-        pass
+        self.pos = Vector2(self.pos.x + (self.bullet_dir.x * self.speed) , self.pos.y + (self.bullet_dir.y * self.speed))
+        self.bullet_collider = self.bullet_collider.move(self.pos.x - self.bullet_collider.x, self.pos.y- self.bullet_collider.y )
     def out_of_bounds(self):
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     
@@ -313,15 +309,15 @@ class EnemyBomb:
             target_pos: An array of integer values that will be ideally the position of the player ( the value is static )
             
         '''
-        self.sprite = 'bomb.png' # Given a string, the bomb will load as the sprite image
-        self.speed = 1 # An Integer value used to dictate how fast the bomb should move
-        self.pos = [initial_pos[0], initial_pos[1]] 
-        self.target_pos = [ initial_pos[0],target_pos[1]] # Drops down to player's Y positiom
+        self.sprite = r'Sprites\bomb.png' # Given a string, the bomb will load as the sprite image
+        self.speed = 3 # An Integer value used to dictate how fast the bomb should move
+        self.pos = Vector2(initial_pos)
+        self.target_pos = Vector2(target_pos) # Drops down to player's Y positiom
         # Math to figure out what direction the bullet should go
         
-        self.bomb_dir = [(self.target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((self.target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
         self.bomb = image.load(self.sprite)
         self.bomb_collider = self.bomb.get_rect()
+        self.ready_to_explode = False
         pass
     
     def update(self):
@@ -331,8 +327,21 @@ class EnemyBomb:
         Once the enemy has reached their destination or touched the border, we call self.explode()
         '''
         
-        self.pos += ([0,-1] * self.speed)
-        
+        direction = Vector2.normalize(self.target_pos - self.pos)
+        distance = (self.target_pos - self.pos).length()
+        print(distance)
+        if distance > 0:
+            direction.normalize_ip()
+            
+            movement = direction * self.speed
+            self.pos += movement
+            self.bomb_collider = self.bomb_collider.move(self.pos)
+
+            if distance < self.speed:
+                self.bomb_collider.center = [self.target_pos.x , self.target_pos.y]
+                self.ready_to_explode = True
+                print("Destination Reached!")
+                
         # Use level bounds to call explode()
         pass
     
@@ -354,10 +363,10 @@ class EnemyBomb:
         
         After this logic is done, we finally destroy this EnemyBomb instance
         '''
-        spawnedBullet_0 = EnemyBullet(self.pos , [self.pos[0]-1 , self.pos[1] -1])
-        spawnedBullet_1 = EnemyBullet(self.pos , [self.pos[0]+1 , self.pos[1] -1])
-        spawnedBullet_2 = EnemyBullet(self.pos , [self.pos[0]-1 , self.pos[1] +1])
-        spawnedBullet_3 = EnemyBullet(self.pos , [self.pos[0]+1 , self.pos[1] +1])
+        spawnedBullet_0 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y -1))
+        spawnedBullet_1 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y -1))
+        spawnedBullet_2 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y +1))
+        spawnedBullet_3 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y +1))
         
         
         return spawnedBullet_0 , spawnedBullet_1 , spawnedBullet_2 , spawnedBullet_3

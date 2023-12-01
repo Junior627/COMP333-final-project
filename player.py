@@ -30,8 +30,8 @@ class Player:
         self.bullet_speed = 5 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
         self.bullet_cooldown = 25 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
         
-        self.player = image.load(self.idle_sprites[0])
-        self.player_collider  = self.player.get_rect()
+        self.entity = image.load(self.idle_sprites[0])
+        self.entity_collider  = self.entity.get_rect()
         self.dir = Vector2()
         self.dir.x = 0
         self.dir.y = 0
@@ -48,7 +48,7 @@ class Player:
         if self.bullet_cooldown == 0:
             self.bullet_cooldown = 25
             print(self.pos)
-            return PlayerBullet(Vector2(self.player_collider.centerx, self.pos.y), self.bullet_speed )
+            return PlayerBullet(Vector2(self.entity_collider.centerx, self.pos.y), self.bullet_speed )
     
     def update(self, dir):
         '''
@@ -59,7 +59,7 @@ class Player:
         if(self.bullet_cooldown >0):
             self.bullet_cooldown-= 1
 
-        self.movement(dir)
+        self.entity_collider = self.entity_collider.move(self.movement(dir))
     
     def movement(self, dir):
         ''' Called when the player touches a directional key or WASD
@@ -73,26 +73,24 @@ class Player:
         # Update player position
         new_pos = self.pos + temp_pos
         # Check if the new position is within the bounds of the screen
-        if 0 > self.player_collider.left:
+        if 0 > self.entity_collider.left:
             self.pos.x = 0
-        elif SCREEN_WIDTH < self.player_collider.right:
-            self.pos.x = SCREEN_WIDTH - self.player_collider.width
+        elif SCREEN_WIDTH < self.entity_collider.right:
+            self.pos.x = SCREEN_WIDTH - self.entity_collider.width
         else:
             self.pos.x = new_pos.x
             
-        if SCREEN_HEIGHT / 2 > self.player_collider.top :
+        if SCREEN_HEIGHT / 2 > self.entity_collider.top :
             self.pos.y = SCREEN_HEIGHT / 2
-        elif SCREEN_HEIGHT < self.player_collider.bottom :
-            self.pos.y = SCREEN_HEIGHT - self.player_collider.height
+        elif SCREEN_HEIGHT < self.entity_collider.bottom :
+            self.pos.y = SCREEN_HEIGHT - self.entity_collider.height
         else:
             self.pos.y = new_pos.y
             
             
 
         # Update player collider based on the new position
-        self.player_collider = self.player_collider.move(self.pos.x - self.player_collider.x, self.pos.y - self.player_collider.y)
-
-        pass
+        return(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)
     
 class PlayerBullet:
     def __init__(self, initial_pos , bullet_speed):
