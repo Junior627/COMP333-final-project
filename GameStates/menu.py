@@ -5,6 +5,7 @@ from .generic_state import generic_state
 Specific attributes:
 current_option- the index of the current menu option the user is hovering over.
 options- a list of the total menu options.
+title- a list of the title of the game.
 '''
 
 class menu(generic_state):
@@ -12,6 +13,7 @@ class menu(generic_state):
         super(menu, self).__init__()
         self.current_option = 0
         self.options = ["Fight!", "Quit"]
+        self.title = ["THE AURORA", "ARMADA"]
         self.next_state = "levels"
     
     def color_text(self, index):
@@ -23,10 +25,32 @@ class menu(generic_state):
             text_color = pygame.Color("white")
         return self.regularfont.render(self.options[index], True, text_color)
     
+    def color_title_text(self, index):
+        '''Code for title text coloration
+        '''
+        return self.titlefont.render(self.title[index], True, pygame.Color("white"))
+    
+    def color_instruction_text(self):
+        '''Code for instruction text coloration
+        '''
+        return self.captionfont.render("Use arrow keys to navigate; space bar to select; escape to quit", True, pygame.Color("white"))
+    
     def place_text(self, text, index):
         '''Code for text placement
         '''
-        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (50 * (index + 1)))
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (50 * (index + 2)))
+        return text.get_rect(center = center_location)
+    
+    def place_title_text(self, text, index):
+        '''Code for title text placement
+        '''
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (50 * (index + 2)) - 150)
+        return text.get_rect(center = center_location)
+    
+    def place_instruction_text(self, text):
+        '''Code for instruction text placement
+        '''
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + 300)
         return text.get_rect(center = center_location)
     
     def get_event(self, event):
@@ -55,7 +79,12 @@ class menu(generic_state):
     def draw(self, surface):
         '''Code for screen display in the outer menu game state
         '''
-        surface.fill(pygame.Color("midnightblue"))
+        surface.fill(pygame.Color("black"))
         for index in range(len(self.options)):
             text_display = self.color_text(index)
             surface.blit(text_display, self.place_text(text_display, index))
+        for index in range(len(self.title)):
+            text_display = self.color_title_text(index)
+            surface.blit(text_display, self.place_title_text(text_display, index))
+        text_display = self.color_instruction_text()
+        surface.blit(text_display, self.place_instruction_text(text_display))

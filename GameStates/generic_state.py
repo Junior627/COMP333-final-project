@@ -20,7 +20,7 @@ class generic_state:
         self.next_state = None
         self.screen_rect = pygame.display.get_surface().get_rect()
         self.regularfont = pygame.font.Font("GameStates\Cabal-w5j3.ttf", 32)
-        self.titlefont = pygame.font.Font("GameStates\Cabal-w5j3.ttf", 48)
+        self.titlefont = pygame.font.Font("GameStates\Cabal-w5j3.ttf", 60)
         self.captionfont = pygame.font.Font("GameStates\Cabal-w5j3.ttf", 16)
 
     def startup(self):
