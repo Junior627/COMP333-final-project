@@ -33,7 +33,7 @@ class menu(generic_state):
     def color_instruction_text(self):
         '''Code for instruction text coloration
         '''
-        return self.captionfont.render("Use arrow keys to navigate; space bar to select; escape to quit", True, pygame.Color("white"))
+        return self.captionfont.render("Use arrow keys to navigate, space bar to select, escape to quit", True, pygame.Color("white"))
     
     def place_text(self, text, index):
         '''Code for text placement
