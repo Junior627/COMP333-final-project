@@ -29,7 +29,8 @@ class Shooter:
             Values such as movement speed 
         '''
         self.pos = Vector2(x,y)# Keeps track of the enemy's position on screen
-        self.destination_pos = [x + 0,y] # The destination x,y coordinates where the enemy wants to go
+        self.destination_pos = Vector2(x,y) # The destination x,y coordinates where the enemy wants to go
+        self.direction_x = 1
         
         self.idle_sprites = ['Sprites\shooter_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
         self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
@@ -42,6 +43,13 @@ class Shooter:
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     
+    def createNewDestination(self):
+        self.movement_cooldown  = 50
+        self.destination_pos.x += (30 * self.direction_x)
+        self.direction_x*= -1
+        
+        pass
+    
     def movement(self):
         '''
         For the shooter, we want the enemy to move side to side, just changing the x position
@@ -51,7 +59,16 @@ class Shooter:
         This will update the Shooter.pos using the Shooter.speed
         
         '''
-        self.movement_cooldown  = 350 + randint(-25 , 150)
+        direction = Vector2.normalize(self.destination_pos - self.pos)
+        distance = (self.destination_pos - self.pos).length()
+        if distance > 0:
+            direction.normalize_ip()
+            
+            movement = direction * self.speed
+            self.pos += movement
+
+            if distance < self.speed:
+                self.entity_collider.center = [self.destination_pos.x , self.destination_pos.y]
         pass
     def shootBullet(self, target_pos):
         '''When called, this will shoot a bullet instance towards the player's position when self.bullet_cooldown is 0
@@ -64,7 +81,8 @@ class Shooter:
         '''
         self.bullet_cooldown = 150 + randint(-50 , 50)
         return EnemyBullet(Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2), target_pos)
-        
+    
+    
     def update(self):
         ''' This will hold all of the Shooter's functions and be the logic the Shooter will follow
         
@@ -82,20 +100,18 @@ class Shooter:
             
 
         if self.movement_cooldown == 0 :
+            self.createNewDestination()
+        if 0 > self.entity_collider.left:
+            self.pos.x = 0
+        elif SCREEN_WIDTH < self.entity_collider.right:
+            self.pos.x = SCREEN_WIDTH - self.entity_collider.width
+        if self.pos.x != self.destination_pos.x:
             self.movement()
         pass
             
         self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
         # Replace this with the pygame.display from the main gameloop!    
         # display.set_mode(10).blit(self.entity , self.entity_collider) 
-    def destroy(self):
-        ''' Occurs when the enemy is hit by the player's bullets.
-        This destroys the enemy instance and plays an explosion sprite over the gone enemy 
-        
-        '''
-        
-         
-        pass
     
     def __del__(self):
         print('Shooter Destroyed!')
@@ -239,29 +255,8 @@ class Bomber:
         
         self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
         # Replace this with the pygame.display from the main gameloop!        
-    def destroy(self):
-        ''' Occurs when the enemy is hit by the player's bullets.
-        This destroys the enemy instance and plays an explosion sprite over the gone enemy 
-        
-        When called, we spawn bullets around the enemy in this formation:
-        
-        *  *  *
-        *  □  *
-        *  *  *
-        
-        The bullet's target_pos would be 
-        
-        [self.pos[0] - 1 , self.pos[1] - 1]  [self.pos[0], self.pos[1] - 1]  [self.pos[0] + 1 , self.pos[1] - 1]
-        [self.pos[0] - 1 , self.pos[1]]                                      [self.pos[0] + 1 , self.pos[1]]
-        [self.pos[0] - 1 , self.pos[1] + 1]  [self.pos[0], self.pos[1] + 1]  [self.pos[0] + 1 , self.pos[1] + 1]
-        
-        After this logic is done, we finally destroy this Bomber instance
-        '''
-        
-        
-        self.kill()
+    def __del__(self):
         pass
-    
 class EnemyBullet:
     def __init__(self, initial_pos, target_pos):
         ''' Creates a Bullet instance using the following parameters
@@ -329,7 +324,6 @@ class EnemyBomb:
         
         direction = Vector2.normalize(self.target_pos - self.pos)
         distance = (self.target_pos - self.pos).length()
-        print(distance)
         if distance > 0:
             direction.normalize_ip()
             
@@ -340,13 +334,15 @@ class EnemyBomb:
             if distance < self.speed:
                 self.bomb_collider.center = [self.target_pos.x , self.target_pos.y]
                 self.ready_to_explode = True
-                print("Destination Reached!")
                 
         # Use level bounds to call explode()
         pass
     
     
     def out_of_bounds(self):
+        '''
+        Define bounds for the bullet. If bullet goes beyond the parameters, it returns false
+        '''
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     def explode(self):
         '''
