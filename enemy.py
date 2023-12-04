@@ -16,6 +16,7 @@ from pygame import *
 from constants import *
 from math import *
 from random import *
+
 class Shooter:
     ''' This creates an instance of the Shooter enemy
     '''
@@ -40,6 +41,7 @@ class Shooter:
         self.movement_cooldown = 40
                 
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     
@@ -129,16 +131,22 @@ class Chaser:
             Time value to determine how long to attack again ( cooldown)
             Values such as movement speed 
         '''
-        self.pos = [x , y] # Keeps track of the enemy's position on screen
-        self.original_pos [self.pos[0], self.pos[1]]
-        self.path_arr = [] # Used to keep the pathfinding values for the enemy
+        self.pos = Vector2(x,y) # Keeps track of the enemy's position on screen
+        self.return_pos = Vector2(x,y)
+        self.destination_pos = Vector2(x,y)
+        self.destination_index = 0
+        self.path_arr = [] # Used to keep the pathfinding values for the enemy (holds vectors)
         
-        self.idle_sprites = ['..\chaser_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
-        self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
-        self.speed = 2
-        self.movement_cooldown = 50
+        self.idle_sprites = ['Sprites\chaser_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.shoot_sprites = ['Sprites\chaser_shoot_1.png','Sprites\chaser_shoot_2.png' ]
+        self.speed = 3
+        self.movement_cooldown = 150
+        self.bullet_cooldown = 0
         
+        self.original_image = image.load(self.idle_sprites[0])
+        self.original_image = transform.scale(self.original_image,(self.original_image.get_width()*2,self.original_image.get_height()*2)) 
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     def createPath(self, target_pos):
@@ -149,24 +157,92 @@ class Chaser:
         
         Visualize Path
             Once Chaser begins to attack,
-                They will make a curve upwards ( this should be fixed)
-                    *
-                *       *
-                - - - - V - - - -
-                |               |
-                |               |
-                |               |
-                |               |
-                - - - - ^ - - - -
+                We create a path array in the shape of a capsule
+                         *        *
+                    *                   *
+                *                           *
+                (topLeft) - - - V - - - (topRight)
+                |                           |
+                |                           |
+                |                           |
+                |                           |   
+                (bottomLeft) - - - ^ - - - (bottomRight)
+                *                           *
+                       *             *
+                            *     *
                 
-                Once they finish this curve, they will charge at the player's position 
+                We do this by creating a hypotenuse between the player and target.
+                We calculate the rectangle area by using sin , cos 
+                The radius for the semicircle will be the length between tl_b and tr_b
                 ( this will be static and not update if the player moves after the chaser goes on the chase)
+        
+        '''
+        self.destination_index = 0
+        self.movement_cooldown = 5500000
+        self.path_arr = []
+        self.finished_path = False
+        '''
+        If the Chaser's x pos is less than (on the left of) the player's , Chaser is on the top left and player is bottomr right
+        Else, chaser is on top right and player is bottom left
+        
         '''
         
-        
-        pass
+        if(target_pos.x > self.pos.x):
+            topLeft = self.pos
+            bottomRight = target_pos
+            topRight = Vector2(self.pos.x + abs(target_pos.x - self.pos.x))
+            bottomLeft = Vector2(self.pos.x,target_pos.y)
+            
+            # Points on upper semi-circle (when chaser is topLeft)
+            theta = 360
+            radius = abs(topLeft.x - topRight.x) //2
+            origin = Vector2(topLeft.x - radius, topLeft.y)
+            while theta > 180:
+                theta -=30 
+                pos_to_add = Vector2(radius * cos(radians(theta)) + origin.x , radius * sin(radians(theta)) + origin.y)
+                self.path_arr.append(pos_to_add)
+                
+            self.path_arr.append(bottomRight)    
+            
+            # Points on bottom semi-circle (when chaser is topLeft)
+            theta = 0
+            radius = abs(bottomLeft.x - bottomRight.x) //2
+            origin = Vector2(bottomRight.x - radius, bottomRight.y)
+            while theta < 180:
+                theta +=30 
+                pos_to_add = Vector2(radius * cos(radians(theta)) + origin.x , radius * sin(radians(theta)) + origin.y)
+                self.path_arr.append(pos_to_add)
+            
+            self.path_arr.append(self.return_pos)
+            
+        else:
+            topRight = self.pos
+            bottomLeft = target_pos
+            topLeft = Vector2(self.pos.x - abs(target_pos.x - self.pos.x) , self.pos.y)
+            bottomRight = Vector2(self.pos.x,target_pos.y)
+            
+            # Points on upper semi-circle (when chaser is topRight)
+            theta = 180
+            radius = abs(topLeft.x - topRight.x) //2
+            origin = Vector2(radius + topRight.x , topRight.y)
+            while theta < 360:
+                theta +=30 
+                pos_to_add = Vector2(radius * cos(radians(theta)) + origin.x , radius * sin(radians(theta)) + origin.y)
+                self.path_arr.append(pos_to_add)
+                
+            self.path_arr.append(bottomLeft)    
+            
+            # Points on bottom semi-circle (when chaser is topRight)
+            theta = 180
+            radius = abs(bottomLeft.x - bottomRight.x) //2
+            origin = Vector2(radius + bottomLeft.x , bottomLeft.y)
+            while theta > 0:
+                theta -=30 
+                pos_to_add = Vector2(radius * cos(radians(theta)) + origin.x , radius * sin(radians(theta)) + origin.y)
+                self.path_arr.append(pos_to_add)            
+            self.path_arr.append(self.return_pos)
     
-    def movement(self, target_pos):
+    def movement(self):
         '''
         For the chaser, we want the enemy to swoop to attack the player. ( This path will be created using createPath())
         This function will loop over the path made from createPath
@@ -175,11 +251,46 @@ class Chaser:
         Within the loop, we will update the self.pos using the self.speed
         
         '''
-        
-        [(target_pos[0]-self.pos[0] ) / (max(self.pos) - min(self.pos)) , ((target_pos[1]-self.pos[1] ) / (max(self.pos) - min(self.pos)))] 
-        
-        
-        pass
+        self.destination_pos = self.path_arr[self.destination_index]
+        direction = (self.destination_pos - self.pos)
+        distance = (self.destination_pos - self.pos).length()
+        if distance > 0:
+            
+            # Rotates sprite on the unit vector to its next
+            direction.normalize_ip()
+            
+            ''' pos = mouse.get_pos()
+
+              #calculate turret angle
+            x_dist = pos[0] - self.entity_collider.center[0]
+            y_dist = -(pos[1] - self.entity_collider.center[1])#-ve because pygame y coordinates increase down the screen
+            angle = degrees(atan2(y_dist, x_dist))'''
+            
+            angle = degrees(atan2(-direction.y, direction.x))
+            self.entity = transform.rotate(self.original_image, angle + 90 )
+
+            self.entity_collider.center = [self.pos.x- self.entity_collider.x , self.pos.y- self.entity_collider.y]
+            self.entity_collider = self.entity.get_rect( center=self.entity_collider.center)
+    
+            '''angle = degrees(atan2(-direction.y, direction.x))
+            self.entity = transform.rotate(self.entity, angle )'''
+            movement = direction * self.speed
+            self.pos += movement
+            
+            
+            if distance < self.speed or distance < 0.1:
+                
+                self.entity_collider.center = [self.destination_pos.x , self.destination_pos.y]
+                            
+                self.destination_index +=1
+                if self.destination_index == len(self.path_arr):
+                    self.finished_path = True
+                    self.destination_index = 0
+                    self.movement_cooldown = 350
+                    print("FINISHED PATH!")
+                    self.entity = transform.rotate(self.original_image, 0)
+                    self.entity_collider.center = [self.return_pos.x , self.return_pos.y]
+
         
     def update(self):
         ''' This will hold all of the Chaser's functions and be the logic the Chaser will follow
@@ -194,14 +305,11 @@ class Chaser:
         if self.movement_cooldown >0:
             self.movement_cooldown -=1
             
-        if self.movement_cooldown == 0:
-            self.createPath()
-            
+        if self.path_arr !=[] and not self.finished_path:
+            self.movement()
         
-        # Replace this with the pygame.display from the main gameloop!    
-        display.set_mode(10).blit(self.entity , self.entity_collider) 
-        pass
-    
+        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
         This destroys the enemy instance and plays an explosion sprite over the gone enemy 
@@ -230,6 +338,7 @@ class Bomber:
         self.bullet_cooldown = 200
         
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
      
@@ -257,6 +366,7 @@ class Bomber:
         # Replace this with the pygame.display from the main gameloop!        
     def __del__(self):
         pass
+
 class EnemyBullet:
     def __init__(self, initial_pos, target_pos):
         ''' Creates a Bullet instance using the following parameters
@@ -311,6 +421,7 @@ class EnemyBomb:
         # Math to figure out what direction the bullet should go
         
         self.bomb = image.load(self.sprite)
+        self.bomb = transform.scale(self.bomb,(self.bomb.get_width()*2,self.bomb.get_height()*2)) 
         self.bomb_collider = self.bomb.get_rect()
         self.ready_to_explode = False
         pass
@@ -366,8 +477,7 @@ class EnemyBomb:
         
         
         return spawnedBullet_0 , spawnedBullet_1 , spawnedBullet_2 , spawnedBullet_3
-        
-    
+           
 def unit_tests():
     
     ''' Unit tests for enemy.py would include:

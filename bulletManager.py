@@ -1,6 +1,5 @@
 from pygame import *
 from constants import *
-
 class BulletManager:
     def __init__(self):
         self.player_bullets = []
@@ -37,6 +36,7 @@ class BulletManager:
 
         for bullet in bulletList:
             if bullet.bullet_collider.colliderect(target.entity_collider):
+                print('Collision detected!')
                 bullets_to_remove.append(bullet)
                 if_collide = True
         # Remove bullets outside the loop
