@@ -13,7 +13,7 @@ current_choices- a list of the indices of the current components the user has se
 position- the current option the user is hovering over within the current menu.
 '''
 
-class customization(generic_state):
+class Customization(generic_state):
     def __init__(self):
         super(customization, self).__init__()
         self.current_engine = 0
