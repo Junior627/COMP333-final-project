@@ -14,24 +14,25 @@ screen = pygame.display.set_mode(size)
 player = Player()
 enemyList = []
 
+clock=  time.Clock()
+bulletManager = BulletManager()
+fxManager = visualFXManager()
 
 x = 0
 while x < 6:
-    enemyList.append(Shooter((SCREEN_WIDTH / 6) * x, 10))
+    enemyList.append(Shooter((SCREEN_WIDTH / 6) * x, 10 , bulletManager))
     x +=1
     
 y = 0
 while y < 3:
-    enemyList.append(Bomber((SCREEN_WIDTH / 3) * (y + .33) , 50))
+    enemyList.append(Bomber((SCREEN_WIDTH / 3) * (y + .33) , 50 , bulletManager))
     y+=1
 z = 0
 while z < 4:
-    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .5) , 90))
+    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .2) , 90 , bulletManager))
     z+=1
 
-clock=  time.Clock()
-bulletManager = BulletManager()
-fxManager = visualFXManager()
+
 
 def main():
     while True:
@@ -59,15 +60,7 @@ def main():
         if enemyList != []:
             for enemy in enemyList:
                 
-                enemy.update()
-                
-                if(enemy.bullet_cooldown == 0 and enemy.__class__.__name__ == "Shooter"):
-                    bulletManager.add_enemy_bullet(enemy.shootBullet(Vector2(player.entity_collider.centerx,player.pos.y)))
-                elif (enemy.bullet_cooldown == 0 and enemy.__class__.__name__ == "Bomber"):
-                    bulletManager.add_enemy_bomb(enemy.shootBomb(Vector2(player.entity_collider.centerx , player.pos.y)))
-                elif(enemy.__class__.__name__ == "Chaser"):
-                    if(enemy.movement_cooldown == 0):
-                        enemy.createPath(Vector2(player.entity_collider.centerx,player.pos.y))
+                enemy.update(Vector2(player.entity_collider.centerx,player.pos.y))
                 screen.blit(enemy.entity, enemy.entity_collider)
                 
         screen.blit(player.entity, player.pos)

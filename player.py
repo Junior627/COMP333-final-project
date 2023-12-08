@@ -47,7 +47,6 @@ class Player:
         '''
         if self.bullet_cooldown == 0:
             self.bullet_cooldown = 25
-            print(self.pos)
             return PlayerBullet(Vector2(self.entity_collider.centerx, self.pos.y), self.bullet_speed )
     
     def update(self, dir):

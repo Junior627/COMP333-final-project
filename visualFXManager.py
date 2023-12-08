@@ -15,7 +15,6 @@ class visualFXManager:
         for fx in list:
             fx.draw()
             if fx.endOfAnim():
-                print("End of Animatin")
                 list.remove(fx)
                 
     def add_explosion_fx(self, x , y, fx_arg):
@@ -39,17 +38,15 @@ class Explosion:
         
     def endOfAnim(self):
         if self.anim_index >= len(self.explode):
-            print(len(self.explode))
             return True
         return False
     def draw(self):
         self.rect.topleft = (self.pos.x , self.pos.y) 
         self.anim_counter +=1       
         self.anim_index = (self.anim_counter + 1) // 3
-        print(self.anim_index)
     
     def __del__(self):
-        print("Effect Ended")
+        pass
 
 class BulletExplosion:
     def __init__(self, x ,y):
@@ -66,14 +63,12 @@ class BulletExplosion:
         self.anim_counter = 0
     def endOfAnim(self):
         if self.anim_index >= len(self.explode):
-            print(len(self.explode))
             return True
         return False
     def draw(self):
         self.rect.topleft = (self.pos.x , self.pos.y) 
         self.anim_counter +=1       
         self.anim_index = (self.anim_counter + 1) // 3
-        print(self.anim_index)
     
     def __del__(self):
-        print("Effect Ended")
+        pass

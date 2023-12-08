@@ -20,7 +20,7 @@ from random import *
 class Shooter:
     ''' This creates an instance of the Shooter enemy
     '''
-    def __init__(self, x,y ):
+    def __init__(self, x,y , bulletManager):
         '''
         This will initilize the Shooter Enemy and store information
         such as:
@@ -39,6 +39,8 @@ class Shooter:
         self.bullet_speed = 1
         self.bullet_cooldown = 150
         self.movement_cooldown = 40
+        
+        self.bulletManager = bulletManager
                 
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
@@ -82,10 +84,10 @@ class Shooter:
         
         '''
         self.bullet_cooldown = 150 + randint(-50 , 50)
-        return EnemyBullet(Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2), target_pos)
+        self.bulletManager.add_enemy_bullet(EnemyBullet(Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2), target_pos))
     
     
-    def update(self):
+    def update(self , target_pos):
         ''' This will hold all of the Shooter's functions and be the logic the Shooter will follow
         
         For example, the Shooter will stop in their tracks to shoot three bullets at once.
@@ -100,7 +102,9 @@ class Shooter:
             self.bullet_cooldown -= 1
             self.movement_cooldown -= 1
             
-
+        if self.bullet_cooldown == 0:
+            self.shootBullet(target_pos)    
+          
         if self.movement_cooldown == 0 :
             self.createNewDestination()
         if 0 > self.entity_collider.left:
@@ -122,7 +126,7 @@ class Chaser:
     ''' This creates an instance of the Chaser enemy
     
     '''
-    def __init__(self , x , y):
+    def __init__(self , x , y , bulletManager ):
         '''
         This will initilize the Chaser Enemy and store information
         such as:
@@ -141,14 +145,16 @@ class Chaser:
         self.shoot_sprites = ['Sprites\chaser_shoot_1.png','Sprites\chaser_shoot_2.png' ]
         self.speed = 3
         self.movement_cooldown = 150
-        self.bullet_cooldown = 0
+        self.bullet_cooldown = 15
         
         self.original_image = image.load(self.idle_sprites[0])
         self.original_image = transform.scale(self.original_image,(self.original_image.get_width()*2,self.original_image.get_height()*2)) 
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
-        pass
+        
+        
+        self.bulletManager = bulletManager
     def createPath(self, target_pos):
         ''' Creates an array of position values for the enemy to follow 
         The target_pos is the Player's position
@@ -241,7 +247,23 @@ class Chaser:
                 pos_to_add = Vector2(radius * cos(radians(theta)) + origin.x , radius * sin(radians(theta)) + origin.y)
                 self.path_arr.append(pos_to_add)            
             self.path_arr.append(self.return_pos)
-    
+            
+    def shootBullet(self):
+        print("Dir : ", self.direction)
+                
+        rotateVector1 = self.direction.rotate(15)
+        rotateVector2 = self.direction.rotate(-15)
+        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        rotateVector1.normalize_ip()
+        rotateVector2.normalize_ip()
+        print(rotateVector1)
+        print(Vector2(self.entity_collider.center))
+        newBullet1 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector1)
+        newBullet2 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector2)
+        
+        self.bullet_cooldown = 75
+        self.bulletManager.add_enemy_bullet(newBullet1) 
+        self.bulletManager.add_enemy_bullet(newBullet2)
     def movement(self):
         '''
         For the chaser, we want the enemy to swoop to attack the player. ( This path will be created using createPath())
@@ -252,35 +274,25 @@ class Chaser:
         
         '''
         self.destination_pos = self.path_arr[self.destination_index]
-        direction = (self.destination_pos - self.pos)
+        self.direction = (self.destination_pos - self.pos)
         distance = (self.destination_pos - self.pos).length()
         if distance > 0:
             
             # Rotates sprite on the unit vector to its next
-            direction.normalize_ip()
-            
-            ''' pos = mouse.get_pos()
-
-              #calculate turret angle
-            x_dist = pos[0] - self.entity_collider.center[0]
-            y_dist = -(pos[1] - self.entity_collider.center[1])#-ve because pygame y coordinates increase down the screen
-            angle = degrees(atan2(y_dist, x_dist))'''
-            
-            angle = degrees(atan2(-direction.y, direction.x))
+            self.direction.normalize_ip()
+        
+            angle = degrees(atan2(-self.direction.y, self.direction.x))
             self.entity = transform.rotate(self.original_image, angle + 90 )
 
             self.entity_collider.center = [self.pos.x- self.entity_collider.x , self.pos.y- self.entity_collider.y]
             self.entity_collider = self.entity.get_rect( center=self.entity_collider.center)
     
-            '''angle = degrees(atan2(-direction.y, direction.x))
-            self.entity = transform.rotate(self.entity, angle )'''
-            movement = direction * self.speed
+            movement = self.direction * self.speed
             self.pos += movement
             
             
             if distance < self.speed or distance < 0.1:
-                
-                self.entity_collider.center = [self.destination_pos.x , self.destination_pos.y]
+                self.entity_collider.center = [self.pos.x , self.pos.y]
                             
                 self.destination_index +=1
                 if self.destination_index == len(self.path_arr):
@@ -288,11 +300,12 @@ class Chaser:
                     self.destination_index = 0
                     self.movement_cooldown = 350
                     print("FINISHED PATH!")
+                    self.direction = Vector2(0,1)
                     self.entity = transform.rotate(self.original_image, 0)
                     self.entity_collider.center = [self.return_pos.x , self.return_pos.y]
 
         
-    def update(self):
+    def update(self , target_pos):
         ''' This will hold all of the Chaser's functions and be the logic the Chaser will follow
         
         For example, the Chaser will stay still for 
@@ -301,13 +314,19 @@ class Chaser:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
-        
+        self.bullet_cooldown -=1
         if self.movement_cooldown >0:
             self.movement_cooldown -=1
-            
+        
+        if(self.movement_cooldown == 0):
+            self.createPath(target_pos)
+        
         if self.path_arr !=[] and not self.finished_path:
             self.movement()
-        
+    
+        if self.destination_index == 6 and self.bullet_cooldown <= 0:
+            self.shootBullet()
+
         self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
 
     def destroy(self):
@@ -321,7 +340,7 @@ class Bomber:
     ''' This creates an instance of the Bomber enemy
     
     '''
-    def __init__(self, x, y):
+    def __init__(self, x, y, bulletManager):
         '''
         This will initilize the Bomber Enemy and store information
         such as:
@@ -336,6 +355,8 @@ class Bomber:
         self.speed = 0 
         self.bullet_speed = 1
         self.bullet_cooldown = 200
+        
+        self.bulletManager = bulletManager
         
         self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
@@ -352,8 +373,8 @@ class Bomber:
         '''
         self.bullet_cooldown = 200 + randint(-25 , 100)
         og_pos = Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2)
-        return EnemyBomb( og_pos , target_pos)
-    def update(self):
+        self.bulletManager.add_enemy_bomb(EnemyBomb( og_pos , target_pos))
+    def update(self , target_pos):
         ''' This will hold all of the Bomber's functions and be the logic the Shooter will follow
         
         If the enemy collides with a player bullet, it calls destroy()
@@ -362,6 +383,9 @@ class Bomber:
         if self.bullet_cooldown >0:
             self.bullet_cooldown -= 1
         
+        if self.bullet_cooldown == 0:
+            self.shootBomb(target_pos)    
+            
         self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
         # Replace this with the pygame.display from the main gameloop!        
     def __del__(self):
