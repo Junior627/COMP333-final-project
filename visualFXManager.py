@@ -41,7 +41,7 @@ class Explosion:
             return True
         return False
     def draw(self):
-        self.rect.topleft = (self.pos.x , self.pos.y) 
+        self.rect.center = (self.pos.x , self.pos.y) 
         self.anim_counter +=1       
         self.anim_index = (self.anim_counter + 1) // 3
     
@@ -66,7 +66,7 @@ class BulletExplosion:
             return True
         return False
     def draw(self):
-        self.rect.topleft = (self.pos.x , self.pos.y) 
+        self.rect.center = (self.pos.x , self.pos.y) 
         self.anim_counter +=1       
         self.anim_index = (self.anim_counter + 1) // 3
     

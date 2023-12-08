@@ -20,16 +20,16 @@ fxManager = visualFXManager()
 
 x = 0
 while x < 6:
-    enemyList.append(Shooter((SCREEN_WIDTH / 6) * x, 10 , bulletManager))
+    enemyList.append(Shooter((SCREEN_WIDTH / 6) * (x +.33), 30 , bulletManager))
     x +=1
     
 y = 0
 while y < 3:
-    enemyList.append(Bomber((SCREEN_WIDTH / 3) * (y + .33) , 50 , bulletManager))
+    enemyList.append(Bomber((SCREEN_WIDTH / 3) * (y + .33) , 70 , bulletManager))
     y+=1
 z = 0
 while z < 4:
-    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .2) , 90 , bulletManager))
+    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .2) , 120 , bulletManager))
     z+=1
 
 

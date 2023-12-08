@@ -84,7 +84,7 @@ class Shooter:
         
         '''
         self.bullet_cooldown = 150 + randint(-50 , 50)
-        self.bulletManager.add_enemy_bullet(EnemyBullet(Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2), target_pos))
+        self.bulletManager.add_enemy_bullet(EnemyBullet(self.pos, target_pos))
     
     
     def update(self , target_pos):
@@ -115,7 +115,7 @@ class Shooter:
             self.movement()
         pass
             
-        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         # Replace this with the pygame.display from the main gameloop!    
         # display.set_mode(10).blit(self.entity , self.entity_collider) 
     
@@ -253,7 +253,7 @@ class Chaser:
                 
         rotateVector1 = self.direction.rotate(15)
         rotateVector2 = self.direction.rotate(-15)
-        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         rotateVector1.normalize_ip()
         rotateVector2.normalize_ip()
         print(rotateVector1)
@@ -292,7 +292,7 @@ class Chaser:
             
             
             if distance < self.speed or distance < 0.1:
-                self.entity_collider.center = [self.pos.x , self.pos.y]
+                self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
                             
                 self.destination_index +=1
                 if self.destination_index == len(self.path_arr):
@@ -327,7 +327,7 @@ class Chaser:
         if self.destination_index == 6 and self.bullet_cooldown <= 0:
             self.shootBullet()
 
-        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
 
     def destroy(self):
         ''' Occurs when the enemy is hit by the player's bullets.
@@ -372,8 +372,7 @@ class Bomber:
         
         '''
         self.bullet_cooldown = 200 + randint(-25 , 100)
-        og_pos = Vector2(self.pos.x + (self.entity_collider.width / 2),self.pos.y+ self.entity_collider.height/2)
-        self.bulletManager.add_enemy_bomb(EnemyBomb( og_pos , target_pos))
+        self.bulletManager.add_enemy_bomb(EnemyBomb( self.pos , target_pos))
     def update(self , target_pos):
         ''' This will hold all of the Bomber's functions and be the logic the Shooter will follow
         
@@ -386,7 +385,7 @@ class Bomber:
         if self.bullet_cooldown == 0:
             self.shootBomb(target_pos)    
             
-        self.entity_collider = self.entity_collider.move(self.pos.x - self.entity_collider.x, self.pos.y - self.entity_collider.y)    
+        self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         # Replace this with the pygame.display from the main gameloop!        
     def __del__(self):
         pass
@@ -421,7 +420,7 @@ class EnemyBullet:
         
         '''
         self.pos = Vector2(self.pos.x + (self.bullet_dir.x * self.speed) , self.pos.y + (self.bullet_dir.y * self.speed))
-        self.bullet_collider = self.bullet_collider.move(self.pos.x - self.bullet_collider.x, self.pos.y- self.bullet_collider.y )
+        self.bullet_collider =self.bullet.get_rect(center = (round(self.pos.x), round(self.pos.y)))
     def out_of_bounds(self):
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     
@@ -464,7 +463,7 @@ class EnemyBomb:
             
             movement = direction * self.speed
             self.pos += movement
-            self.bomb_collider = self.bomb_collider.move(self.pos)
+            self.bomb_collider = self.bomb.get_rect(center = (round(self.pos.x), round(self.pos.y)))
 
             if distance < self.speed:
                 self.bomb_collider.center = [self.target_pos.x , self.target_pos.y]
