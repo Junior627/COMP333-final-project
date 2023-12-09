@@ -33,7 +33,12 @@ class Shooter:
         self.destination_pos = Vector2(x,y) # The destination x,y coordinates where the enemy wants to go
         self.direction_x = 1
         
-        self.idle_sprites = ['Sprites\shooter_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.animationIndex = 0
+        self.idle_sprites = [image.load('Sprites\shooter_idle1.png'), 
+                             image.load('Sprites\shooter_idle2.png') , 
+                             image.load('Sprites\shooter_idle3.png')] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.idle_sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.idle_sprites ]
+        
         self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
         self.speed = 1
         self.bullet_speed = 1
@@ -42,9 +47,15 @@ class Shooter:
         
         self.bulletManager = bulletManager
                 
-        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
-        self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
+        self.entity = self.idle_sprites[0] # Loads into the actual sprite as an image
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
+        pass
+    
+    def animationLoop(self):
+        if (self.animationIndex // 6) > len(self.idle_sprites) - 1:
+            self.animationIndex = 0
+        self.animationIndex+=1
+        self.entity = self.idle_sprites[self.animationIndex // 6 % len(self.idle_sprites)]
         pass
     
     def createNewDestination(self):
@@ -97,7 +108,7 @@ class Shooter:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
-        
+        self.animationLoop()
         if self.bullet_cooldown >0 or self.movement_cooldown >0 :
             self.bullet_cooldown -= 1
             self.movement_cooldown -= 1
@@ -141,20 +152,39 @@ class Chaser:
         self.destination_index = 0
         self.path_arr = [] # Used to keep the pathfinding values for the enemy (holds vectors)
         
-        self.idle_sprites = ['Sprites\chaser_idle.png'] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        
+        self.animationIndex = 0
+        self.idle_sprites = [image.load('Sprites\chaser_idle1.png'), 
+                             image.load('Sprites\chaser_idle2.png') , 
+                             image.load('Sprites\chaser_idle3.png'),
+                             image.load('Sprites\chaser_idle4.png') ,
+                             image.load('Sprites\chaser_idle5.png') ,
+                             image.load('Sprites\chaser_idle6.png') ,
+                             image.load('Sprites\chaser_idle7.png') ,
+                             image.load('Sprites\chaser_idle8.png')] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.idle_sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.idle_sprites ]
+
         self.shoot_sprites = ['Sprites\chaser_shoot_1.png','Sprites\chaser_shoot_2.png' ]
         self.speed = 3
         self.movement_cooldown = 150
         self.bullet_cooldown = 15
         
-        self.original_image = image.load(self.idle_sprites[0])
-        self.original_image = transform.scale(self.original_image,(self.original_image.get_width()*2,self.original_image.get_height()*2)) 
-        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
-        self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
+        self.original_image = self.idle_sprites[0]
+        self.entity = (self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         
         
         self.bulletManager = bulletManager
+        
+    def animationLoop(self):
+        if (self.animationIndex // 4) > len(self.idle_sprites) - 1:
+            self.animationIndex = 0
+        self.animationIndex+=1
+        
+        self.entity = self.idle_sprites[self.animationIndex // 4 % len(self.idle_sprites)]
+        self.original_image = self.entity
+        pass
+    
     def createPath(self, target_pos):
         ''' Creates an array of position values for the enemy to follow 
         The target_pos is the Player's position
@@ -314,6 +344,7 @@ class Chaser:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
+        self.animationLoop()
         self.bullet_cooldown -=1
         if self.movement_cooldown >0:
             self.movement_cooldown -=1
@@ -358,11 +389,24 @@ class Bomber:
         
         self.bulletManager = bulletManager
         
-        self.entity = image.load(self.idle_sprites[0]) # Loads into the actual sprite as an image
+        self.animationIndex = 0
+        self.idle_sprites = [image.load(r'Sprites\bomber_idle1.png'), 
+                             image.load(r'Sprites\bomber_idle2.png') , 
+                             image.load(r'Sprites\bomber_idle3.png'),
+                             image.load(r'Sprites\bomber_idle4.png')] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
+        self.idle_sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.idle_sprites ]
+        
+        self.entity = (self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity = transform.scale(self.entity,(self.entity.get_width()*2,self.entity.get_height()*2)) 
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
-     
+    def animationLoop(self):
+        if (self.animationIndex // 12) > len(self.idle_sprites) - 1:
+            self.animationIndex = 0
+        self.animationIndex+=1
+        self.entity = self.idle_sprites[self.animationIndex // 12 % len(self.idle_sprites)]
+        pass
+    
     def shootBomb(self, target_pos):
         '''When called, this will shoot a bomb instance towards the player's position
         
@@ -379,6 +423,8 @@ class Bomber:
         If the enemy collides with a player bullet, it calls destroy()
         
         '''
+        
+        self.animationLoop()
         if self.bullet_cooldown >0:
             self.bullet_cooldown -= 1
         

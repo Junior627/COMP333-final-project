@@ -29,7 +29,7 @@ while y < 3:
     y+=1
 z = 0
 while z < 4:
-    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .2) , 120 , bulletManager))
+    enemyList.append(Chaser((SCREEN_WIDTH / 4) * (z + .5) , 120 , bulletManager))
     z+=1
 
 
