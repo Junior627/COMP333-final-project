@@ -1,7 +1,7 @@
 import pygame
 from .generic_state import generic_state
 
-'''Skeleton code for the ship customization game state.
+'''Code for the ship customization game state.
 Specific attributes:
 current_engine- the index of the current engine the user has selected.
 current_weapon- the index of the current weapon the user has selected.
@@ -102,7 +102,7 @@ class customization(generic_state):
         Each engine should have a different movement speed
         Each weapon should have a different bullet speed 
         '''
-        self.quit = True
+        self.done = True
 
     def startup(self):
         self.next_state = "shipgame"
