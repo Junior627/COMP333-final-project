@@ -103,8 +103,8 @@ class customization(generic_state):
         Each engine should have a different movement speed
         Each weapon should have a different bullet speed 
         '''
-        levelcontrolparameters.engine_choice = self.current_engine
-        levelcontrolparameters.weapon_choice = self.current_weapon
+        levelcontrolparameters.engine_choice = self.current_choices[0]
+        levelcontrolparameters.weapon_choice = self.current_choices[1]
         self.done = True
 
     def startup(self):
