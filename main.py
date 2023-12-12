@@ -8,6 +8,8 @@ from GameStates.menu import menu
 from GameStates.levels import levels
 from GameStates.customization import customization
 from GameStates.shipgame import shipgame
+from GameStates.gameover import gameover
+from GameStates.victory import victory
 
 # initialize pygame
 pygame.init()
@@ -20,7 +22,9 @@ states = {
     "menu": menu(),
     "levels": levels(),
     "customization": customization(),
-    "shipgame": shipgame()
+    "shipgame": shipgame(),
+    "gameover": gameover(),
+    "victory": victory()
 }
 
 gameplay = Game(screen, states, "menu")

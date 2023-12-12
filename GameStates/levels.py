@@ -1,6 +1,7 @@
 import pygame
 import math
 from .generic_state import generic_state
+import levelcontrolparameters
 
 '''Code for the menu game state upon level selection.
 Specific attributes:
@@ -13,7 +14,7 @@ class levels(generic_state):
     def __init__(self):
         super(levels, self).__init__()
         self.current_level = 0
-        self.unlocked_level = 11
+        self.unlocked_level = levelcontrolparameters.unlocked_level
 
         self.total_rows = 5
         self.total_columns = 3
@@ -91,10 +92,12 @@ class levels(generic_state):
     def select_level(self):
         '''Placeholder code for level selection
         '''
-        self.done = True
+        levelcontrolparameters.current_level = self.current_level
+        self.done = True     
 
     def startup(self):
         self.next_state = "customization"
+        self.unlocked_level = levelcontrolparameters.unlocked_level
 
     def draw(self, surface):
         '''Code for screen display in the level selection menu game state
