@@ -14,8 +14,7 @@ class BulletManager:
     def update_bomb_list(self, bombs):
         for bomb in bombs:
             bomb.update()
-            if bomb.ready_to_explode :
-                
+            if bomb.ready_to_explode:
                 new_bullets = bomb.explode()
                 
                 for bullet in new_bullets:

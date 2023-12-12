@@ -26,9 +26,19 @@ class Player:
         self.shoot_sprites = ['Sprites\player_shoot.png']
         self.shoot_move = ['Sprites\player_move.png']
         
+        # Player Stats Constants ( used to hold all information that gets updated such as invincibility window and bullet cooldown)
+        
+        self.BULLET_CONSTANT = 50
+        self.INVIN_CONSTANT = 100
+        
+        
+        # Player Stats (all of them are changed from customization options)
+        self.health = 5 # How many hits the player can take
         self.speed =  3 # This value will change depending on customizationInfo.current_engine ( we can use if-else for this )
         self.bullet_speed = 5 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
-        self.bullet_cooldown = 25 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
+        self.bullet_cooldown = self.BULLET_CONSTANT # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
+        self.bullet_damage = 2 # Depending on customizationInfo.current_weapon, this value will change 
+        self.invincibility_window = self.INVIN_CONSTANT # When hit, the player becomes invincible for 100 frames to ease the experience
         
         self.entity = image.load(self.idle_sprites[0])
         self.entity_collider  = self.entity.get_rect()
@@ -38,7 +48,16 @@ class Player:
         
         # Parameters for pygame interactivity        
         pass
-    
+    def takeDamage(self) :
+        ''' If the player's invincibility window is over
+        
+        '''
+        
+        if self.invincibility_window == 0:
+            self.health -= 1
+            self.invincibility_window = self.INVIN_CONSTANT
+            print("took damage!")
+        
     def shoot(self):
         ''' During the main gameplay loop, if the shoot button is pressed, this function will be called
         
@@ -46,7 +65,7 @@ class Player:
         
         '''
         if self.bullet_cooldown == 0:
-            self.bullet_cooldown = 25
+            self.bullet_cooldown = self.BULLET_CONSTANT
             return PlayerBullet(Vector2(self.entity_collider.centerx, self.pos.y), self.bullet_speed )
     
     def update(self, dir):
@@ -55,8 +74,11 @@ class Player:
         
         For instance, this will countdown the self.bullet_cooldown to 0 and stopping there
         '''
+        if self.invincibility_window > 0 :
+            self.invincibility_window -= 1
+        
         if(self.bullet_cooldown >0):
-            self.bullet_cooldown-= 1
+            self.bullet_cooldown -= 1
 
         self.entity_collider = self.entity_collider.move(self.movement(dir))
     

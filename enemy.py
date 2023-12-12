@@ -40,6 +40,9 @@ class Shooter:
         self.idle_sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.idle_sprites ]
         
         self.shoot_sprites = ['..\shooter_shoot_1.png','..\shooter_shoot_2.png' ]
+        
+        # Shooter Stats
+        self.health  = 3
         self.speed = 1
         self.bullet_speed = 1
         self.bullet_cooldown = 150
@@ -57,6 +60,14 @@ class Shooter:
         self.animationIndex+=1
         self.entity = self.idle_sprites[self.animationIndex // 6 % len(self.idle_sprites)]
         pass
+    
+    def takeDamage(self, damage):
+        # Depending on player bullet strength, the enemy takes the appropiate damage
+        self.health -= damage
+        if self.health <= 0:
+            return True
+        else:
+            return False
     
     def createNewDestination(self):
         self.movement_cooldown  = 50
@@ -137,7 +148,7 @@ class Chaser:
     ''' This creates an instance of the Chaser enemy
     
     '''
-    def __init__(self , x , y , bulletManager ):
+    def __init__(self , x , y , bulletManager , player):
         '''
         This will initilize the Chaser Enemy and store information
         such as:
@@ -165,6 +176,9 @@ class Chaser:
         self.idle_sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.idle_sprites ]
 
         self.shoot_sprites = ['Sprites\chaser_shoot_1.png','Sprites\chaser_shoot_2.png' ]
+        
+        # Chaser Stats
+        self.health = 2
         self.speed = 3
         self.movement_cooldown = 150
         self.bullet_cooldown = 15
@@ -173,7 +187,7 @@ class Chaser:
         self.entity = (self.idle_sprites[0]) # Loads into the actual sprite as an image
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         
-        
+        self.playerInstance = player
         self.bulletManager = bulletManager
         
     def animationLoop(self):
@@ -184,6 +198,14 @@ class Chaser:
         self.entity = self.idle_sprites[self.animationIndex // 4 % len(self.idle_sprites)]
         self.original_image = self.entity
         pass
+    
+    def takeDamage(self, damage):
+        # Depending on player bullet strength, the enemy takes the appropiate damage
+        self.health -= damage
+        if self.health <= 0:
+            return True
+        else:
+            return False
     
     def createPath(self, target_pos):
         ''' Creates an array of position values for the enemy to follow 
@@ -346,6 +368,10 @@ class Chaser:
         '''
         self.animationLoop()
         self.bullet_cooldown -=1
+        
+        if self.entity_collider.colliderect(self.playerInstance.entity_collider):
+            self.playerInstance.takeDamage()
+        
         if self.movement_cooldown >0:
             self.movement_cooldown -=1
         
@@ -383,6 +409,9 @@ class Bomber:
         self.pos = Vector2(x,y)# Keeps track of the enemy's position on screen
         self.idle_sprites = [r"Sprites\bomber_idle.png"] # Will keep a string of the file path for the idle sprites ( could be an array to easily loop if the idle animation is more than 1 frame)
         self.shoot_sprites = [r'Sprites\bomber_shoot_1.png',r'Sprites\bomber_shoot_2.png' ]
+        
+        # Bomber Stats
+        self.health  = 5
         self.speed = 0 
         self.bullet_speed = 1
         self.bullet_cooldown = 200
@@ -407,6 +436,14 @@ class Bomber:
         self.entity = self.idle_sprites[self.animationIndex // 12 % len(self.idle_sprites)]
         pass
     
+    def takeDamage(self, damage):
+        # Depending on player bullet strength, the enemy takes the appropiate damage
+        self.health -= damage
+        if self.health <= 0:
+            return True
+        else:
+            return False
+        
     def shootBomb(self, target_pos):
         '''When called, this will shoot a bomb instance towards the player's position
         
@@ -483,14 +520,18 @@ class EnemyBomb:
             target_pos: An array of integer values that will be ideally the position of the player ( the value is static )
             
         '''
-        self.sprite = r'Sprites\bomb.png' # Given a string, the bomb will load as the sprite image
-        self.speed = 3 # An Integer value used to dictate how fast the bomb should move
+        self.sprites = [image.load(r'Sprites\bomb1.png'), 
+                        image.load(r'Sprites\bomb2.png'), 
+                        image.load(r'Sprites\bomb3.png'),
+                        image.load(r'Sprites\bomb4.png')] # Given a string, the bomb will load as the sprite image
+        self.sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.sprites ]
+        self.speed = 2 # An Integer value used to dictate how fast the bomb should move
         self.pos = Vector2(initial_pos)
         self.target_pos = Vector2(target_pos) # Drops down to player's Y positiom
         # Math to figure out what direction the bullet should go
         
-        self.bomb = image.load(self.sprite)
-        self.bomb = transform.scale(self.bomb,(self.bomb.get_width()*2,self.bomb.get_height()*2)) 
+        self.animationIndex = 0
+        self.bomb = self.sprites[0]
         self.bomb_collider = self.bomb.get_rect()
         self.ready_to_explode = False
         pass
@@ -501,6 +542,8 @@ class EnemyBomb:
         
         Once the enemy has reached their destination or touched the border, we call self.explode()
         '''
+        
+            
         
         direction = Vector2.normalize(self.target_pos - self.pos)
         distance = (self.target_pos - self.pos).length()
@@ -513,12 +556,18 @@ class EnemyBomb:
 
             if distance < self.speed:
                 self.bomb_collider.center = [self.target_pos.x , self.target_pos.y]
-                self.ready_to_explode = True
+                self.animateExplode()
                 
         # Use level bounds to call explode()
         pass
     
-    
+    def animateExplode(self):
+        if (self.animationIndex // 4) <= len(self.sprites) - 1:
+            self.animationIndex+=1
+            self.bomb = self.sprites[self.animationIndex // 4 % len(self.sprites)]
+        else: 
+            self.ready_to_explode = True
+        
     def out_of_bounds(self):
         '''
         Define bounds for the bullet. If bullet goes beyond the parameters, it returns false
