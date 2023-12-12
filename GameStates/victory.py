@@ -30,7 +30,7 @@ class victory(generic_state):
 
 
     def get_event(self, event):
-        '''Code for handling events in the game over menu game state
+        '''Code for handling events in the victory menu game state
         '''
         if event.type == pygame.QUIT:
             self.quit = True
@@ -43,7 +43,7 @@ class victory(generic_state):
                 self.quit = True
 
     def draw(self, surface):
-        '''Code for screen display in the game over menu game state
+        '''Code for screen display in the victory menu game state
         '''
         surface.fill(pygame.Color("black"))
         surface.blit(self.victory_text, self.victory_text_position)
