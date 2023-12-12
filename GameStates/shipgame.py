@@ -39,8 +39,8 @@ class shipgame(generic_state):
             [0, 0, 6],
             [0, 3, 4],
             [3, 3, 3],
-            [6, 3, 4]
-        ]
+            [6, 3, 4]]
+        self.next_state = "gameover"
 
     def spawn_enemies(self, level):
         shooters, bombers, chasers = self.enemies_spawning[level]
@@ -59,6 +59,8 @@ class shipgame(generic_state):
 
     def startup(self):
         self.spawn_enemies(levelcontrolparameters.current_level)
+        self.player_hit = False
+        self.next_state = "gameover"
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
@@ -68,7 +70,7 @@ class shipgame(generic_state):
 
     def draw(self, surface):
         '''Code for screen display in the ship game state. Includes a bit of logic that was difficult
-        to include elsewhere.
+        to include elsewhere thanks to the use of get_pressed instead of keydown.
         Much of this code taken from test.py.
         '''
         surface.fill(pygame.Color("black"))
