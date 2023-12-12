@@ -3,7 +3,7 @@ from .generic_state import generic_state
 from player import Player
 from enemy import Shooter, Bomber, Chaser
 from bulletManager import BulletManager
-from visualFXManager import visualFXManager
+from visualFXManager import visualFXManager, Explosion, BulletExplosion
 
 '''Code for the game state upon level selection.
 Specific attributes:
@@ -22,7 +22,18 @@ class shipgame(generic_state):
         self.fx = visualFXManager()
 
     def startup(self):
-        pass
+        x = 0
+        while x < 6:
+            self.enemies.append(Shooter((self.screen_rect.width / 6) * (x +.33), 30 , self.bullets))
+            x +=1
+        y = 0
+        while y < 3:
+            self.enemies.append(Bomber((self.screen_rect.width / 3) * (y + .33) , 70 , self.bullets))
+            y+=1
+        z = 0
+        while z < 4:
+            self.enemies.append(Chaser((self.screen_rect.width / 4) * (z + .5) , 120 , self.bullets))
+            z+=1
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
@@ -64,7 +75,7 @@ class shipgame(generic_state):
         for bullet in self.bullets.enemy_bullets:
             surface.blit(bullet.bullet , bullet.pos)
             if bullet.out_of_bounds():
-                self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, self.fx.BulletExplosion)
+                self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, BulletExplosion)
         for bomb in self.bullets.enemy_bombs:
             surface.blit(bomb.bomb , bomb.pos)
         self.bullets.update_bullets()     
@@ -72,7 +83,7 @@ class shipgame(generic_state):
         
         for enemy in self.enemies:
             if self.bullets.check_for_collision(self.bullets.player_bullets,enemy):
-                self.fx.add_explosion_fx(enemy.pos.x , enemy.pos.y, self.fx.Explosion)
+                self.fx.add_explosion_fx(enemy.pos.x , enemy.pos.y, Explosion)
                 enemy_to_remove.append(enemy)
         
         for enemy in enemy_to_remove:
@@ -86,4 +97,4 @@ class shipgame(generic_state):
         self.player.update(dir)
         
         if self.bullets.check_for_collision(self.bullets.enemy_bullets, self.player):
-            self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, self.fx.BulletExplosion)
+            self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, BulletExplosion)
