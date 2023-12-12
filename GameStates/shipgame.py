@@ -9,9 +9,12 @@ from visualFXManager import visualFXManager, Explosion, BulletExplosion
 '''Code for the game state upon level selection.
 Specific attributes:
 player- the ship the user should be able to control.
-enemies- the list of enemies that appear at the start of the level.
+enemies- the list of enemies currently are currently on screen.
 bullets- a class used to manage the bullets currently on screen.
 fx- a class used to manage the visual effects currently on screen.
+enemies_spawning- a list of lists, with each sublist representing
+the total number of enemies that should spawn for the level corresponding
+to its index.
 '''
 
 class shipgame(generic_state):
@@ -21,21 +24,41 @@ class shipgame(generic_state):
         self.enemies = []
         self.bullets = BulletManager()
         self.fx = visualFXManager()
+        self.enemies_spawning = [
+            [1, 0, 0],
+            [4, 0, 0],
+            [8, 0, 0],
+            [0, 2, 0],
+            [2, 1, 0],
+            [3, 3, 0],
+            [0, 4, 0],
+            [0, 0, 3],
+            [2, 0, 2],
+            [1, 3, 1],
+            [5, 0, 3],
+            [0, 0, 6],
+            [0, 3, 4],
+            [3, 3, 3],
+            [6, 3, 4]
+        ]
+
+    def spawn_enemies(self, level):
+        shooters, bombers, chasers = self.enemies_spawning[level]
+        x = 0
+        while x < shooters:
+            self.enemies.append(Shooter((self.screen_rect.width / shooters) * (x + .33), 30 , self.bullets))
+            x += 1
+        y = 0
+        while y < bombers:
+            self.enemies.append(Bomber((self.screen_rect.width / bombers) * (y + .33) , 70 , self.bullets))
+            y+= 1
+        z = 0
+        while z < chasers:
+            self.enemies.append(Chaser((self.screen_rect.width / chasers) * (z + .5) , 120 , self.bullets))
+            z+= 1
 
     def startup(self):
-        if levelcontrolparameters.current_level == 1:
-            x = 0
-            while x < 6:
-                self.enemies.append(Shooter((self.screen_rect.width / 6) * (x +.33), 30 , self.bullets))
-                x +=1
-            y = 0
-            while y < 3:
-                self.enemies.append(Bomber((self.screen_rect.width / 3) * (y + .33) , 70 , self.bullets))
-                y+=1
-            z = 0
-            while z < 4:
-                self.enemies.append(Chaser((self.screen_rect.width / 4) * (z + .5) , 120 , self.bullets))
-                z+=1
+        self.spawn_enemies(levelcontrolparameters.current_level)
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
