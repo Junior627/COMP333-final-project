@@ -27,16 +27,16 @@ class shipgame(generic_state):
         self.enemies_spawning = [
             [1, 0, 0],
             [4, 0, 0],
-            [8, 0, 0],
+            [6, 0, 0],
             [0, 2, 0],
             [2, 1, 0],
             [3, 3, 0],
-            [0, 4, 0],
+            [6, 3, 0],
             [0, 0, 3],
             [2, 0, 2],
             [1, 3, 1],
             [5, 0, 3],
-            [0, 0, 6],
+            [0, 0, 4],
             [0, 3, 4],
             [3, 3, 3],
             [6, 3, 4]]
@@ -58,8 +58,14 @@ class shipgame(generic_state):
             z+= 1
 
     def startup(self):
+        self.player.pos = pygame.Vector2(self.screen_rect.width / 2 , (self.screen_rect.height * 3) / 4)
+        self.enemies = []
+        self.bullets.player_bullets = []
+        self.bullets.enemy_bullets = []
+        self.bullets.enemy_bombs = []
+        self.fx.explosion_list = []
+        self.fx.bullet_explosion_list = []
         self.spawn_enemies(levelcontrolparameters.current_level)
-        self.player_hit = False
         self.next_state = "gameover"
     
     def get_event(self, event):
@@ -115,6 +121,9 @@ class shipgame(generic_state):
         
         for enemy in enemy_to_remove:
             self.enemies.remove(enemy)
+            if self.enemies == []:
+                self.next_state = "victory"
+                self.done = True
         
         self.fx.update_lists()
         for explosion in self.fx.explosion_list:
@@ -125,3 +134,4 @@ class shipgame(generic_state):
         
         if self.bullets.check_for_collision(self.bullets.enemy_bullets, self.player):
             self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, BulletExplosion)
+            self.done = True

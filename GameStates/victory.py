@@ -16,15 +16,18 @@ class victory(generic_state):
         self.next_state = "levels"
         self.victory_text = self.titlefont.render("YOU WIN", True, pygame.Color("yellow"))
         self.victory_text_position = self.victory_text.get_rect(center = self.screen_rect.center)
-        self.instruction_text = self.regularfont.render("Press space to return to level selection", True, pygame.Color("white"))
+        self.instruction_text = self.captionfont.render("Press space to return to level selection", True, pygame.Color("white"))
         self.instruction_text_center = (self.screen_rect.center[0], self.screen_rect.center[1] + 100)
         self.instruction_text_position = self.instruction_text.get_rect(center = self.instruction_text_center)
 
     def startup(self):
-        if levelcontrolparameters.current_level + 1 == levelcontrolparameters.unlocked_level:
-            self.instruction_text = self.regularfont.render("A new level has been unlocked. Press space to return to level selection", True, pygame.Color("white"))
-            self.instruction_text_center = (self.screen_rect.center[0], self.screen_rect.center[1] + 100)
-            self.instruction_text_position = self.instruction_text.get_rect(center = self.instruction_text_center)
+        if levelcontrolparameters.current_level + 1 == levelcontrolparameters.unlocked_level and levelcontrolparameters.current_level != 14:
+            self.instruction_text = self.captionfont.render("A new level has been unlocked. Press space to return to level selection", True, pygame.Color("white"))
+        else:
+            self.instruction_text = self.captionfont.render("Press space to return to level selection", True, pygame.Color("white"))
+        self.instruction_text_center = (self.screen_rect.center[0], self.screen_rect.center[1] + 100)
+        self.instruction_text_position = self.instruction_text.get_rect(center = self.instruction_text_center)
+
 
     def get_event(self, event):
         '''Code for handling events in the game over menu game state
@@ -33,7 +36,7 @@ class victory(generic_state):
             self.quit = True
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                if levelcontrolparameters.current_level + 1 == levelcontrolparameters.unlocked_level:
+                if levelcontrolparameters.current_level + 1 == levelcontrolparameters.unlocked_level and levelcontrolparameters.current_level != 14:
                     levelcontrolparameters.unlocked_level += 1
                 self.done = True
             if event.key == pygame.K_ESCAPE:

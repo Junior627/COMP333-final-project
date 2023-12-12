@@ -15,7 +15,7 @@ class gameover(generic_state):
         self.next_state = "levels"
         self.game_over_text = self.titlefont.render("GAME OVER", True, pygame.Color("red"))
         self.game_over_text_position = self.game_over_text.get_rect(center = self.screen_rect.center)
-        self.instruction_text = self.regularfont.render("Press R to try again, or space to return to level selection", True, pygame.Color("white"))
+        self.instruction_text = self.captionfont.render("Press R to try again, or space to return to level selection", True, pygame.Color("white"))
         self.instruction_text_center = (self.screen_rect.center[0], self.screen_rect.center[1] + 100)
         self.instruction_text_position = self.instruction_text.get_rect(center = self.instruction_text_center)
 
