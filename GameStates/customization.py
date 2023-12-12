@@ -1,5 +1,6 @@
 import pygame
 from .generic_state import generic_state
+import levelcontrolparameters
 
 '''Code for the ship customization game state.
 Specific attributes:
@@ -102,6 +103,8 @@ class customization(generic_state):
         Each engine should have a different movement speed
         Each weapon should have a different bullet speed 
         '''
+        levelcontrolparameters.engine_choice = self.current_engine
+        levelcontrolparameters.weapon_choice = self.current_weapon
         self.done = True
 
     def startup(self):

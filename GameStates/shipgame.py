@@ -1,5 +1,6 @@
 import pygame
 from .generic_state import generic_state
+import levelcontrolparameters
 from player import Player
 from enemy import Shooter, Bomber, Chaser
 from bulletManager import BulletManager
@@ -22,18 +23,19 @@ class shipgame(generic_state):
         self.fx = visualFXManager()
 
     def startup(self):
-        x = 0
-        while x < 6:
-            self.enemies.append(Shooter((self.screen_rect.width / 6) * (x +.33), 30 , self.bullets))
-            x +=1
-        y = 0
-        while y < 3:
-            self.enemies.append(Bomber((self.screen_rect.width / 3) * (y + .33) , 70 , self.bullets))
-            y+=1
-        z = 0
-        while z < 4:
-            self.enemies.append(Chaser((self.screen_rect.width / 4) * (z + .5) , 120 , self.bullets))
-            z+=1
+        if levelcontrolparameters.current_level == 1:
+            x = 0
+            while x < 6:
+                self.enemies.append(Shooter((self.screen_rect.width / 6) * (x +.33), 30 , self.bullets))
+                x +=1
+            y = 0
+            while y < 3:
+                self.enemies.append(Bomber((self.screen_rect.width / 3) * (y + .33) , 70 , self.bullets))
+                y+=1
+            z = 0
+            while z < 4:
+                self.enemies.append(Chaser((self.screen_rect.width / 4) * (z + .5) , 120 , self.bullets))
+                z+=1
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
