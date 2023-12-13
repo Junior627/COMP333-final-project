@@ -156,7 +156,6 @@ class shipgame(generic_state):
 
                             
         self.player.update(dir)
-        print(levelcontrolparameters.weapon_choice)
   
         if self.player.health <= 0:
             self.done = True
