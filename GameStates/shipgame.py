@@ -171,7 +171,6 @@ class shipgame(generic_state):
         self.displayHealth(surface)
                             
         self.player.update(dir)
-        print(levelcontrolparameters.weapon_choice)
   
         if self.player.health <= 0:
             self.done = True
