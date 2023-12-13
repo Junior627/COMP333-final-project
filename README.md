@@ -24,18 +24,22 @@ See https://www.pygame.org/wiki/GettingStarted and https://wiki.python.org/moin/
 ## How To Use
 
 To run the game, simply download the directory as a .zip, unzip it, and run main.py from the main directory through a terminal command such as 
-'''bash
+
+```bash
 python3 main.py
-'''
-or 
-'''bash
+```
+
+or
+
+```bash
 py -3 main.py. 
-'''
+```
+
 Note: the directory should appear similar to this at the end:
 (...\Downloads\The-Aurora-Armada-main OR ...\Downloads\The-Aurora-Armada-main\The-Aurora-Armada-main)
 depending on how you unzipped.
 
-For the Future:
+## For the Future
 - Additional Features:
     - Audio (Background Music, SFX)
     - More Enemy Types / Bosses, More Levels
