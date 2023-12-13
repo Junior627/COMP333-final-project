@@ -45,7 +45,7 @@ class Player:
         if weapon_choice == 0:
             self.bullet_damage = 1
             self.bullet_speed = 8
-            self.BULLET_CONSTANT = 30
+            self.BULLET_CONSTANT = 25
         
         elif weapon_choice == 1:
             self.bullet_damage = 2
@@ -55,7 +55,7 @@ class Player:
         elif weapon_choice == 2:
             self.bullet_damage = 3
             self.bullet_speed = 4
-            self.BULLET_CONSTANT = 55
+            self.BULLET_CONSTANT = 65
         
         # Engine 0 -> Faster Movement, Lower Health
         # Engine 1 -> Average Movement and Health
@@ -64,16 +64,16 @@ class Player:
         if engine_choice == 0:
             self.health = 2
             self.speed = 5
-            self.INVIN_CONSTANT = 35
+            self.INVIN_CONSTANT = 45
         
         elif engine_choice == 1:
             self.health = 3
             self.speed = 3
-            self.INVIN_CONSTANT = 50
+            self.INVIN_CONSTANT = 55
             
         elif engine_choice == 2:
             self.health = 5
-            self.speed = 2
+            self.speed = 2.5
             self.INVIN_CONSTANT = 65
         
         self.bullet_cooldown = self.BULLET_CONSTANT

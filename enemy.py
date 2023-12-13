@@ -105,8 +105,9 @@ class Shooter:
         Ideally, we would add this to a bullet array that is updated in the game framework (so when the enemy dies, the bullet doesn't disappear)
         
         '''
-        self.bullet_cooldown = 150 + randint(-50 , 50)
-        self.bulletManager.add_enemy_bullet(EnemyBullet(self.pos, target_pos))
+        self.bullet_cooldown = 150 + randint(-50 , 25)
+        target_pos.x += randint(-10,10)
+        self.bulletManager.add_enemy_bullet(EnemyBullet(self.pos, target_pos, 4))
     
     
     def update(self , target_pos):
@@ -179,8 +180,8 @@ class Chaser:
         
         # Chaser Stats
         self.health = 2
-        self.speed = 3
-        self.movement_cooldown = 150
+        self.speed = 4
+        self.movement_cooldown = 125
         self.bullet_cooldown = 15
         
         self.original_image = self.idle_sprites[0]
@@ -310,10 +311,10 @@ class Chaser:
         rotateVector2.normalize_ip()
         print(rotateVector1)
         print(Vector2(self.entity_collider.center))
-        newBullet1 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector1)
-        newBullet2 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector2)
+        newBullet1 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector1, 5)
+        newBullet2 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector2, 5)
         
-        self.bullet_cooldown = 75
+        self.bullet_cooldown = 35
         self.bulletManager.add_enemy_bullet(newBullet1) 
         self.bulletManager.add_enemy_bullet(newBullet2)
     def movement(self):
@@ -350,7 +351,7 @@ class Chaser:
                 if self.destination_index == len(self.path_arr):
                     self.finished_path = True
                     self.destination_index = 0
-                    self.movement_cooldown = 350
+                    self.movement_cooldown = 200
                     print("FINISHED PATH!")
                     self.direction = Vector2(0,1)
                     self.entity = transform.rotate(self.original_image, 0)
@@ -452,7 +453,8 @@ class Bomber:
         Returns : Returns nothing as it is creating a new instance of the class EnemyBomb
         
         '''
-        self.bullet_cooldown = 200 + randint(-25 , 100)
+        self.bullet_cooldown = 200 + randint(-45 , 35)
+        target_pos += Vector2(randint(-35,35), randint(-35,35))
         self.bulletManager.add_enemy_bomb(EnemyBomb( self.pos , target_pos))
     def update(self , target_pos):
         ''' This will hold all of the Bomber's functions and be the logic the Shooter will follow
@@ -474,7 +476,7 @@ class Bomber:
         pass
 
 class EnemyBullet:
-    def __init__(self, initial_pos, target_pos):
+    def __init__(self, initial_pos, target_pos, bulletSpeed):
         ''' Creates a Bullet instance using the following parameters
         Args: 
             sprite: A string value holding the directory path for the image
@@ -483,10 +485,10 @@ class EnemyBullet:
             
         '''
         self.sprite = 'Sprites\enemy_bullet.png' # Given a string, the bullet will load as the sprite image
-        self.speed = 4 # An Integer value used to dictate how fast the bullet should move
+        self.speed = bulletSpeed # An Integer value used to dictate how fast the bullet should move
         # Math to figure out what direction the bullet should go
         self.pos = Vector2()
-        self.pos.x = initial_pos[0] + randint(-10,10)
+        self.pos.x = initial_pos[0]
         self.pos.y = initial_pos[1]
         
         self.bullet = image.load(self.sprite)
@@ -526,6 +528,7 @@ class EnemyBomb:
                         image.load(r'Sprites\bomb4.png')] # Given a string, the bomb will load as the sprite image
         self.sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.sprites ]
         self.speed = 3 # An Integer value used to dictate how fast the bomb should move
+        self.bulletSpeed = 2.5
         self.pos = Vector2(initial_pos)
         self.target_pos = Vector2(target_pos) # Drops down to player's Y positiom
         # Math to figure out what direction the bullet should go
@@ -588,13 +591,16 @@ class EnemyBomb:
         
         After this logic is done, we finally destroy this EnemyBomb instance
         '''
-        spawnedBullet_0 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y -1))
-        spawnedBullet_1 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y -1))
-        spawnedBullet_2 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y +1))
-        spawnedBullet_3 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y +1))
+        spawnedBullet_0 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y -1), self.bulletSpeed)
+        spawnedBullet_1 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y -1), self.bulletSpeed)
+        spawnedBullet_2 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y +1), self.bulletSpeed)
+        spawnedBullet_3 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y +1), self.bulletSpeed) 
+        spawnedBullet_4 = EnemyBullet(self.pos , Vector2(self.pos.x , self.pos.y -1), self.bulletSpeed)
+        spawnedBullet_5 = EnemyBullet(self.pos , Vector2(self.pos.x , self.pos.y +1), self.bulletSpeed)
+        spawnedBullet_6 = EnemyBullet(self.pos , Vector2(self.pos.x-1 , self.pos.y), self.bulletSpeed)
+        spawnedBullet_7 = EnemyBullet(self.pos , Vector2(self.pos.x+1 , self.pos.y), self.bulletSpeed)
         
-        
-        return spawnedBullet_0 , spawnedBullet_1 , spawnedBullet_2 , spawnedBullet_3
+        return spawnedBullet_0 , spawnedBullet_1 , spawnedBullet_2 , spawnedBullet_3 , spawnedBullet_4 , spawnedBullet_5 , spawnedBullet_6 , spawnedBullet_7
            
 def unit_tests():
     

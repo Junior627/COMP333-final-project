@@ -87,9 +87,7 @@ class shipgame(generic_state):
         
         self.healthPoints = []
         self.healthSprite = pygame.image.load(r'Sprites/health_point.png')
-        self.healthSprite = pygame.transform.scale(self.healthSprite,(self.healthSprite.get_width()*2, self.healthSprite.get_height()*2))
-        for x in range(self.player.health):
-            self.healthPoints.append(self.healthSprite)
+        self.healthSprite = pygame.transform.scale(self.healthSprite,(self.healthSprite.get_width()*3, self.healthSprite.get_height()*3))
             
     
     def get_event(self, event):
@@ -100,8 +98,8 @@ class shipgame(generic_state):
 
     def displayHealth(self, surface):
         x = 0
-        for healthPoint in self.healthPoints:
-            surface.blit(healthPoint, (x * 10, 500))
+        for healthPoint in range(self.player.health) :
+            surface.blit(self.healthSprite, (x * 24, 740))
             x+=1
 
     def draw(self, surface):
@@ -155,7 +153,6 @@ class shipgame(generic_state):
             if self.bullets.check_for_collision([bullet], self.player):
                 self.fx.add_explosion_fx(bullet.pos.x, bullet.pos.y , BulletExplosion)
                 self.bullets.enemy_bullets.remove(bullet)
-                del self.healthPoints[-1]
                 self.player.takeDamage()
             if bullet.out_of_bounds():
                 self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, BulletExplosion)
