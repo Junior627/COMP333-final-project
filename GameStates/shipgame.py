@@ -84,12 +84,25 @@ class shipgame(generic_state):
         self.fx.bullet_explosion_list = []
         self.spawn_enemies(levelcontrolparameters.current_level)
         self.next_state = "gameover"
+        
+        self.healthPoints = []
+        self.healthSprite = pygame.image.load(r'Sprites/health_point.png')
+        self.healthSprite = pygame.transform.scale(self.healthSprite,(self.healthSprite.get_width()*2, self.healthSprite.get_height()*2))
+        for x in range(self.player.health):
+            self.healthPoints.append(self.healthSprite)
+            
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
         '''
         if event.type == pygame.QUIT:
             self.quit = True
+
+    def displayHealth(self, surface):
+        x = 0
+        for healthPoint in self.healthPoints:
+            surface.blit(healthPoint, (x * 10, 500))
+            x+=1
 
     def draw(self, surface):
         '''Code for screen display in the ship game state. Includes a bit of logic that was difficult
@@ -142,6 +155,7 @@ class shipgame(generic_state):
             if self.bullets.check_for_collision([bullet], self.player):
                 self.fx.add_explosion_fx(bullet.pos.x, bullet.pos.y , BulletExplosion)
                 self.bullets.enemy_bullets.remove(bullet)
+                del self.healthPoints[-1]
                 self.player.takeDamage()
             if bullet.out_of_bounds():
                 self.fx.add_explosion_fx(bullet.pos.x,bullet.pos.y, BulletExplosion)
@@ -154,6 +168,7 @@ class shipgame(generic_state):
         for explosion in self.fx.explosion_list:
             surface.blit(explosion.explode[explosion.anim_index], explosion.rect)
 
+        self.displayHealth(surface)
                             
         self.player.update(dir)
         print(levelcontrolparameters.weapon_choice)

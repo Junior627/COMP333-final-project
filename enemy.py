@@ -483,7 +483,7 @@ class EnemyBullet:
             
         '''
         self.sprite = 'Sprites\enemy_bullet.png' # Given a string, the bullet will load as the sprite image
-        self.speed = 3 # An Integer value used to dictate how fast the bullet should move
+        self.speed = 4 # An Integer value used to dictate how fast the bullet should move
         # Math to figure out what direction the bullet should go
         self.pos = Vector2()
         self.pos.x = initial_pos[0] + randint(-10,10)
@@ -525,7 +525,7 @@ class EnemyBomb:
                         image.load(r'Sprites\bomb3.png'),
                         image.load(r'Sprites\bomb4.png')] # Given a string, the bomb will load as the sprite image
         self.sprites = [transform.scale(image,(image.get_width()*2, image.get_height()*2)) for image in self.sprites ]
-        self.speed = 2 # An Integer value used to dictate how fast the bomb should move
+        self.speed = 3 # An Integer value used to dictate how fast the bomb should move
         self.pos = Vector2(initial_pos)
         self.target_pos = Vector2(target_pos) # Drops down to player's Y positiom
         # Math to figure out what direction the bullet should go
