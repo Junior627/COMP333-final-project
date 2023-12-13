@@ -1,5 +1,4 @@
 from pygame import *
-from GameStates import customization
 from constants import *
 '''
 This file will contain all logic for the player and how the player controls their ship
@@ -26,19 +25,6 @@ class Player:
         self.shoot_sprites = ['Sprites\player_shoot.png']
         self.shoot_move = ['Sprites\player_move.png']
         
-        # Player Stats Constants ( used to hold all information that gets updated such as invincibility window and bullet cooldown)
-        
-        self.BULLET_CONSTANT = 50
-        self.INVIN_CONSTANT = 100
-        
-        
-        # Player Stats (all of them are changed from customization options)
-        self.health = 5 # How many hits the player can take
-        self.speed =  3 # This value will change depending on customizationInfo.current_engine ( we can use if-else for this )
-        self.bullet_speed = 5 # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
-        self.bullet_cooldown = self.BULLET_CONSTANT # These values will change depending on customizationInfo.current_weapon ( we can use if-else for this )
-        self.bullet_damage = 2 # Depending on customizationInfo.current_weapon, this value will change 
-        self.invincibility_window = self.INVIN_CONSTANT # When hit, the player becomes invincible for 100 frames to ease the experience
         
         self.entity = image.load(self.idle_sprites[0])
         self.entity_collider  = self.entity.get_rect()
@@ -48,6 +34,49 @@ class Player:
         
         # Parameters for pygame interactivity        
         pass
+    def initStats(self, weapon_choice, engine_choice):
+         # Player Stats Constants ( used to hold all information that gets updated such as invincibility window and bullet cooldown)
+        
+        # Weapon 0 -> Faster Shootout, Lower Damage
+        # Weapon 1 -> Average Shootout and Damage
+        # Weapon 2 -> Slower Shootout, Higher Damage
+        
+        if weapon_choice == 0:
+            self.bullet_damage = 1
+            self.bullet_speed = 8
+            self.BULLET_CONSTANT = 30
+        
+        elif weapon_choice == 1:
+            self.bullet_damage = 2
+            self.bullet_speed = 6
+            self.BULLET_CONSTANT = 45
+            
+        elif weapon_choice == 2:
+            self.bullet_damage = 3
+            self.bullet_speed = 4
+            self.BULLET_CONSTANT = 55
+        
+        # Engine 0 -> Faster Movement, Lower Health
+        # Engine 1 -> Average Movement and Health
+        # Engine 2 -> Slower Movement, Higher Health
+        
+        if engine_choice == 0:
+            self.health = 2
+            self.speed = 5
+            self.INVIN_CONSTANT = 35
+        
+        elif engine_choice == 1:
+            self.health = 3
+            self.speed = 3
+            self.INVIN_CONSTANT = 50
+            
+        elif engine_choice == 2:
+            self.health = 5
+            self.speed = 2
+            self.INVIN_CONSTANT = 65
+        
+        self.bullet_cooldown = self.BULLET_CONSTANT
+        self.invincibility_window = self.INVIN_CONSTANT
     def takeDamage(self) :
         ''' If the player's invincibility window is over
         
