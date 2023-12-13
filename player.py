@@ -22,9 +22,6 @@ class Player:
         idle = "Sprites\player_idle.png"
         # This will hold all arrays of sprites animations, important ones are the idle, shoot, and moving. A single animation may need more than one sprite so we use arrays
         self.idle_sprites = [idle]
-        self.shoot_sprites = ['Sprites\player_shoot.png']
-        self.shoot_move = ['Sprites\player_move.png']
-        
         
         self.entity = image.load(self.idle_sprites[0])
         self.entity_collider  = self.entity.get_rect()
@@ -35,7 +32,11 @@ class Player:
         # Parameters for pygame interactivity        
         pass
     def initStats(self, weapon_choice, engine_choice):
-         # Player Stats Constants ( used to hold all information that gets updated such as invincibility window and bullet cooldown)
+        
+        self.entity = image.load("Sprites\player_weapon"+str(weapon_choice)+"_engine"+str(engine_choice)+".png")
+        self.entity_collider  = self.entity.get_rect()
+        
+        # Player Stats Constants ( used to hold all information that gets updated such as invincibility window and bullet cooldown)
         
         # Weapon 0 -> Faster Shootout, Lower Damage
         # Weapon 1 -> Average Shootout and Damage
