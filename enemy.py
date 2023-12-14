@@ -1,6 +1,4 @@
-'''This is the skeleton code for the enemy-related code
-
-This file will contain all enemy class instances
+'''Contains all enemy class instances.
 
 Since there are three distinct versions of the common enemy
 
@@ -55,6 +53,8 @@ class Shooter:
         pass
     
     def animationLoop(self):
+        '''Changes the sprite of the shooter to the next sprite every 6 frames. 
+        '''
         if (self.animationIndex // 6) > len(self.idle_sprites) - 1:
             self.animationIndex = 0
         self.animationIndex+=1
@@ -62,7 +62,9 @@ class Shooter:
         pass
     
     def takeDamage(self, damage):
-        # Depending on player bullet strength, the enemy takes the appropiate damage
+        '''Depending on player bullet strength, the enemy takes the appropiate damage.
+        Args: damage- the damage to be taken by the enemy.
+        Returns: true if that damage kills the enemy, false otherwise'''
         self.health -= damage
         if self.health <= 0:
             return True
@@ -70,6 +72,8 @@ class Shooter:
             return False
     
     def createNewDestination(self):
+        '''Changes the pathing of the enemy, causing it to turn around.
+        '''
         self.movement_cooldown  = 50
         self.destination_pos.x += (30 * self.direction_x)
         self.direction_x*= -1
@@ -189,6 +193,8 @@ class Chaser:
         self.bulletManager = bulletManager
         
     def animationLoop(self):
+        '''Changes the sprite of the chaser to the next sprite every 4 frames. 
+        '''
         if (self.animationIndex // 4) > len(self.idle_sprites) - 1:
             self.animationIndex = 0
         self.animationIndex+=1
@@ -198,7 +204,9 @@ class Chaser:
         pass
     
     def takeDamage(self, damage):
-        # Depending on player bullet strength, the enemy takes the appropiate damage
+        '''Depending on player bullet strength, the enemy takes the appropiate damage.
+        Args: damage- the damage to be taken by the enemy.
+        Returns: true if that damage kills the enemy, false otherwise'''
         self.health -= damage
         if self.health <= 0:
             return True
@@ -423,6 +431,8 @@ class Bomber:
         self.entity_collider = self.entity.get_rect() # Creates a rectangle collider for the image, which will be perfect for handling collisions
         pass
     def animationLoop(self):
+        '''Changes the sprite of the bomber to the next sprite every 12 frames. 
+        '''
         if (self.animationIndex // 12) > len(self.idle_sprites) - 1:
             self.animationIndex = 0
         self.animationIndex+=1
@@ -430,7 +440,9 @@ class Bomber:
         pass
     
     def takeDamage(self, damage):
-        # Depending on player bullet strength, the enemy takes the appropiate damage
+        '''Depending on player bullet strength, the enemy takes the appropiate damage.
+        Args: damage- the damage to be taken by the enemy.
+        Returns: true if that damage kills the enemy, false otherwise'''
         self.health -= damage
         if self.health <= 0:
             return True
@@ -498,6 +510,9 @@ class EnemyBullet:
         self.pos = Vector2(self.pos.x + (self.bullet_dir.x * self.speed) , self.pos.y + (self.bullet_dir.y * self.speed))
         self.bullet_collider =self.bullet.get_rect(center = (round(self.pos.x), round(self.pos.y)))
     def out_of_bounds(self):
+        '''
+        Define bounds for the bullet. If bullet goes beyond the parameters, it returns false
+        '''
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     
     def destroy(self):
@@ -555,6 +570,8 @@ class EnemyBomb:
         pass
     
     def animateExplode(self):
+        '''Code for the explosion animation.
+        '''
         if (self.animationIndex // 4) <= len(self.sprites) - 1:
             self.animationIndex+=1
             self.bomb = self.sprites[self.animationIndex // 4 % len(self.sprites)]
