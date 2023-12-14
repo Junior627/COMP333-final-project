@@ -1,0 +1,114 @@
+Things that can be more easily tested by running the project instead of writing individual unit tests
+(generally thanks to the inclusion of pygame display or changes across multiple files):
+
+USER SPACESHIP CONTROL
+- Pressing up makes the player move up (✓)
+- Pressing down makes the player move down (✓)
+- Pressing right makes the player move right (✓)
+- Pressing left makes the player move left (✓)
+- Pressing space makes the player shoot a bullet (✓)
+- Pressing a vertical and a horizontal button together makes the player move in both directions (✓)
+- The player cannot move too close to the top side of the screen (✓)
+- The player cannot move off the bottom side of the screen (✓)
+- The player cannot move off the left side of the screen (✓)
+- The player cannot move off the right side of the screen (✓)
+
+USER LEVEL CONTROL, GAMEPLAY
+- The player starts on the outer menu, with an option to start the game and an option to quit the game (✓)
+- The player can navigate between the options on the outer menu using the arrow keys (✓)
+    - Pressing up from the top option moves the player to the bottom option (✓)
+    - Pressing down from the top option moves the player to the bottom option (✓)
+    - Pressing up from the bottom option moves the player to the top option (✓)
+    - Pressing down from the bottom option moves the player to the top option (✓)
+- Pressing escape from the top option closes the game (✓)
+- Pressing escape from the bottom option closes the game (✓)
+- Pressing space from the top option brings the user to the level selection menu (✓)
+- Pressing space from the bottom option closes the game (✓)
+
+For specific level selection unit tests, see the file levelcontrolunittests.py.
+
+- Completing level 1 results in level 2 being unlocked (✓)
+- Completing level 2 results in level 3 being unlocked (✓)
+- Completing level 3 results in level 4 being unlocked (✓)
+- Completing level 1 a second time does not result in a new level being unlocked (✓)
+- Completing level 3 a second time does not result in a new level being unlocked (✓)
+- Starting level 4, failing, and moving to level selection does not result in a new level being unlocked (✓)
+- Completing level 15 does not result in the non-existent level 16 being unlocked (✓)
+
+USER SHIP CUSTOMIZABILITY
+
+- After selecting a level, the player is brought to the customization menu (✓)
+- Pressing escape from the engine menu in customization brings the player to the level selection menu (✓)
+- Pressing escape from the weapon menu in customization brings the player to the level selection menu (✓)
+- Pressing escape from the confirmation button in customization brings the player to the level selection menu (✓)
+- Pressing space from the engine menu changes the user's selected engine (✓)
+- While the player has selected engine 1, the description is for engine 1 (✓)
+- While the player has selected engine 2, the description is for engine 2 (✓)
+- While the player has selected engine 3, the description is for engine 3 (✓)
+- While the player has selected engine 1, the sprite includes engine 1 (✓)
+- While the player has selected engine 2, the sprite includes engine 2 (✓)
+- While the player has selected engine 3, the sprite includes engine 3 (✓)
+- Pressing space from the weapon menu changes the player's selected weapon (✓)
+- While the player has selected weapon 1, the description is for weapon 1 (✓)
+- While the player has selected weapon 2, the description is for weapon 2 (✓)
+- While the player has selected weapon 3, the description is for weapon 3 (✓)
+- While the player has selected weapon 1, the sprite includes weapon 1 (✓)
+- While the player has selected weapon 2, the sprite includes weapon 2 (✓)
+- While the player has selected weapon 3, the sprite includes weapon 3 (✓)
+- Pressing space from the confirmation button in customization starts the level chosen in level selection (✓)
+- Starting a level does not change the player's selected engine/weapon
+| WPN\ENG |  1  |  2  |  3  |
+|---------|-----|-----|-----|
+|       1 | (✓) | (✓) | (✓)|
+|       2 | (✓) | (✓) | (✓)|
+|       3 | (✓) | (✓) | (✓)|
+- Completing a level does not change the player's selected engine/weapon
+| WPN\ENG |  1  |  2  |  3  |
+|---------|-----|-----|-----|
+|       1 | (✓) | (✓) | (✓)|
+|       2 | (✓) | (✓) | (✓)|
+|       3 | (✓) | (✓) | (✓)|
+- Losing and restarting a level does not change the player's selected engine/weapon
+| WPN\ENG |  1  |  2  |  3  |
+|---------|-----|-----|-----|
+|       1 | (✓) | (✓) | (✓)|
+|       2 | (✓) | (✓) | (✓)|
+|       3 | (✓) | (✓) | (✓)|
+- Moving back to level selection and returning does not change the player's selected engine/weapon
+| WPN\ENG |  1  |  2  |  3  |
+|---------|-----|-----|-----|
+|       1 | (✓) | (✓) | (✓)|
+|       2 | (✓) | (✓) | (✓)|
+|       3 | (✓) | (✓) | (✓)|
+- Moving back to the outermost menu and returning does not change the player's selected engine/weapon
+| WPN\ENG |  1  |  2  |  3  |
+|---------|-----|-----|-----|
+|       1 | (✓) | (✓) | (✓)|
+|       2 | (✓) | (✓) | (✓)|
+|       3 | (✓) | (✓) | (✓)|
+- The engine chosen affects the player's movement speed and health (✓)
+- The weapon chosen affects the player's bullet recharge time, bullet speed, and bullet damage (✓)
+
+MAIN GAMEPLAY
+- When the player runs out of health on a level, they are brought to the game over screen (✓)
+- Pressing R from the game over screen retries the level (✓)
+    - The player's position is reset upon a retry (✓)
+    - The player's ship does not duplicate upon a retry (✓)
+    - The enemy positions reset upon a retry (✓)
+    - The enemy ships do not duplicate upon a retry (✓)
+    - No bullets start on screen upon a retry (✓)
+    - The players's choices during customization do not change upon a retry (✓)
+    - The player's health resets upon a retry (✓)
+- Pressing space from the game over screen returns the player to level selection (✓)
+- When there are no enemy spaceships left on screen (ie. the player has completed the level), 
+the player is brought to the victory screen (✓)
+- Pressing space from the victory screen returns the player to level selection (✓)
+- The enemy spaceships that spawn depend on the current level (✓)
+
+ENEMY MOVEMENT BEHAVIOR
+- When an enemy collides with a player bullet, it takes damage (✓)
+- When an enemy's health reaches 0, it is destroyed (✓)
+
+ENEMY SHOOTING BEHAVIOR
+- When an enemy collides with the player, the player takes damage (✓)
+- When an enemy bullet collides with the player, the player takes damage (✓)

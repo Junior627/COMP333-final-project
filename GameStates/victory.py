@@ -21,6 +21,9 @@ class victory(generic_state):
         self.instruction_text_position = self.instruction_text.get_rect(center = self.instruction_text_center)
 
     def startup(self):
+        '''Code for victory game state specific initialization.
+        Changes the instruction text depending on whether or not a new level should be unlocked.
+        '''
         if levelcontrolparameters.current_level + 1 == levelcontrolparameters.unlocked_level and levelcontrolparameters.current_level != 14:
             self.instruction_text = self.captionfont.render("A new level has been unlocked. Press space to return to level selection", True, pygame.Color("white"))
         else:
@@ -31,6 +34,7 @@ class victory(generic_state):
 
     def get_event(self, event):
         '''Code for handling events in the victory menu game state
+        Args: event- the event to be handled.
         '''
         if event.type == pygame.QUIT:
             self.quit = True
@@ -44,6 +48,7 @@ class victory(generic_state):
 
     def draw(self, surface):
         '''Code for screen display in the victory menu game state
+        Args: surface- the current surface.
         '''
         surface.fill(pygame.Color("black"))
         surface.blit(self.victory_text, self.victory_text_position)
