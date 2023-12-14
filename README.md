@@ -41,6 +41,9 @@ Note: the directory should appear similar to this at the end:
 (...\Downloads\The-Aurora-Armada-main OR ...\Downloads\The-Aurora-Armada-main\The-Aurora-Armada-main)
 depending on how you unzipped.
 
+Additionally, note that the player ship is unable to move too far vertically past a certain point (the only thing for which
+no visual indicator is provided).
+
 ## For the Future
 - Additional Features:
     - Audio (Background Music, SFX)
