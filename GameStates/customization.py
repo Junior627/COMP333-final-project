@@ -51,12 +51,12 @@ class customization(generic_state):
         if menu != 2:
             if (self.current_menu == menu) and (self.position == index):
                 if self.position == self.current_choices[menu]:
-                    text_color = pygame.Color("orange")
+                    text_color = pygame.Color("green")
                 else:
                     text_color = pygame.Color("yellow")
             else:
                 if (index == self.current_choices[menu]):
-                    text_color = pygame.Color("red")
+                    text_color = pygame.Color("cyan3")
                 else:
                     text_color = pygame.Color("white")
         if menu == 2:
