@@ -106,5 +106,5 @@ class levels(generic_state):
         for index in range(self.total_levels):
             text_display = self.color_text(index)
             surface.blit(text_display, self.place_text(text_display, index))
-        text_display = self.color_instruction_text()
-        surface.blit(text_display, self.place_instruction_text(text_display))
+        instruction_text_display = self.color_instruction_text()
+        surface.blit(instruction_text_display, self.place_instruction_text(instruction_text_display))

@@ -84,7 +84,7 @@ class menu(generic_state):
             text_display = self.color_text(index)
             surface.blit(text_display, self.place_text(text_display, index))
         for index in range(len(self.title)):
-            text_display = self.color_title_text(index)
-            surface.blit(text_display, self.place_title_text(text_display, index))
-        text_display = self.color_instruction_text()
-        surface.blit(text_display, self.place_instruction_text(text_display))
+            title_text_display = self.color_title_text(index)
+            surface.blit(title_text_display, self.place_title_text(title_text_display, index))
+        instruction_text_display = self.color_instruction_text()
+        surface.blit(instruction_text_display, self.place_instruction_text(instruction_text_display))
