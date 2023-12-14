@@ -86,7 +86,6 @@ class Player:
         if self.invincibility_window == 0:
             self.health -= 1
             self.invincibility_window = self.INVIN_CONSTANT
-            print("took damage!")
         
     def shoot(self):
         ''' During the main gameplay loop, if the shoot button is pressed, this function will be called
@@ -155,7 +154,6 @@ class PlayerBullet:
         self.bullet_dir = Vector2()
         self.bullet_dir.x = 0
         self.bullet_dir.y = 1
-        print("Created at", self.pos)
         pass
     def update(self):
         '''
@@ -168,7 +166,7 @@ class PlayerBullet:
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     def __del__(self):
         '''The bullet will destroy itself if it hits an enemy or an edge of the screen.'''
-        print('Bullet Gone!')
+
         
     
 def unit_tests():
