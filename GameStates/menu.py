@@ -20,7 +20,7 @@ class menu(generic_state):
         '''Code for text coloration
         '''
         if index == self.current_option:
-            text_color = pygame.Color("cyan2")
+            text_color = pygame.Color("yellow")
         else:
             text_color = pygame.Color("white")
         return self.regularfont.render(self.options[index], True, text_color)
@@ -33,7 +33,7 @@ class menu(generic_state):
     def color_instruction_text(self):
         '''Code for instruction text coloration
         '''
-        return self.captionfont.render("Use arrow keys to navigate, space bar to select, escape to quit", True, pygame.Color("white"))
+        return self.captionfont.render("Arrow keys to move, space to select/shoot, esc to quit", True, pygame.Color("white"))
     
     def place_text(self, text, index):
         '''Code for text placement

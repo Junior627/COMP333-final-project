@@ -37,17 +37,17 @@ class customization(generic_state):
         if menu != 2:
             if (self.current_menu == menu) and (self.position == index):
                 if self.position == self.current_choices[menu]:
-                    text_color = pygame.Color("chartreuse")
+                    text_color = pygame.Color("orange")
                 else:
-                    text_color = pygame.Color("cyan2")
+                    text_color = pygame.Color("yellow")
             else:
                 if (index == self.current_choices[menu]):
-                    text_color = pygame.Color("yellow")
+                    text_color = pygame.Color("red")
                 else:
                     text_color = pygame.Color("white")
         if menu == 2:
             if self.current_menu == menu:
-                text_color = pygame.Color("cyan2")
+                text_color = pygame.Color("yellow")
             else:
                 text_color = pygame.Color("white")
         return self.regularfont.render(self.options_menus[menu][index], True, text_color)
@@ -55,7 +55,7 @@ class customization(generic_state):
     def color_instruction_text(self):
         '''Code for instruction text coloration
         '''
-        return self.captionfont.render("Use arrow keys to navigate, space bar to select, escape to go back", True, pygame.Color("white"))
+        return self.captionfont.render("Arrow keys to move, space to select/shoot, esc to go back", True, pygame.Color("white"))
     
     def place_text(self, text, menu, index):
         '''Code for text placement
@@ -99,7 +99,7 @@ class customization(generic_state):
                 self.done = True
 
     def customization_selection(self):
-        '''Placeholder code for engine/weapon selection
+        '''Code for engine/weapon selection
         Each engine should have a different movement speed
         Each weapon should have a different bullet speed 
         '''

@@ -27,7 +27,7 @@ class levels(generic_state):
         '''
         level_number = index + 1
         if index == self.current_level:
-            text_color = pygame.Color("cyan2")
+            text_color = pygame.Color("yellow")
         elif level_number > self.unlocked_level:
             text_color = pygame.Color("darkgray")
         else:
@@ -37,7 +37,7 @@ class levels(generic_state):
     def color_instruction_text(self):
         '''Code for instruction text coloration
         '''
-        return self.captionfont.render("Use arrow keys to navigate, space bar to select, escape to go back", True, pygame.Color("white"))
+        return self.captionfont.render("Arrow keys to move, space to select/shoot, esc to go back", True, pygame.Color("white"))
     
     def place_text(self, text, index):
         '''Code for text placement
@@ -90,7 +90,7 @@ class levels(generic_state):
                 self.done = True
 
     def select_level(self):
-        '''Placeholder code for level selection
+        '''Code for level selection
         '''
         levelcontrolparameters.current_level = self.current_level
         self.done = True     
