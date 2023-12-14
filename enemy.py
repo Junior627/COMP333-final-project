@@ -143,8 +143,7 @@ class Shooter:
         # display.set_mode(10).blit(self.entity , self.entity_collider) 
     
     def __del__(self):
-        print('Shooter Destroyed!')
-    
+        pass
 class Chaser:
     ''' This creates an instance of the Chaser enemy
     
@@ -301,16 +300,12 @@ class Chaser:
                 self.path_arr.append(pos_to_add)            
             self.path_arr.append(self.return_pos)
             
-    def shootBullet(self):
-        print("Dir : ", self.direction)
-                
+    def shootBullet(self):                
         rotateVector1 = self.direction.rotate(15)
         rotateVector2 = self.direction.rotate(-15)
         self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
         rotateVector1.normalize_ip()
         rotateVector2.normalize_ip()
-        print(rotateVector1)
-        print(Vector2(self.entity_collider.center))
         newBullet1 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector1, 5)
         newBullet2 = EnemyBullet(Vector2(self.entity_collider.center) , Vector2(self.entity_collider.center) + rotateVector2, 5)
         
@@ -352,7 +347,6 @@ class Chaser:
                     self.finished_path = True
                     self.destination_index = 0
                     self.movement_cooldown = 200
-                    print("FINISHED PATH!")
                     self.direction = Vector2(0,1)
                     self.entity = transform.rotate(self.original_image, 0)
                     self.entity_collider.center = [self.return_pos.x , self.return_pos.y]
