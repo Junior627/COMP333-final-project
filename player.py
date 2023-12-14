@@ -9,16 +9,13 @@ Currently using a test.py file to incorporate this stuff. Once the gameloop is f
 class Player:
     def __init__(self ):
         ''' This will be used to instantiate the Player class. There should only be one at a time
-        
-        Args: customizationInfo , this will be the declared instance of customization() to get parameters such as current_engine and current_weapon
-        
+                
         '''
         
         self.pos = Vector2(SCREEN_WIDTH / 2 , (SCREEN_HEIGHT * 3) / 4)
         self.pos.x = SCREEN_WIDTH / 2 
         self.pos.y = (SCREEN_HEIGHT * 3) / 4
         
-        # idle = "player"+customizationInfo.options_engine[customizationInfo.current_engine]+"_"+customizationInfo.options_weapon[customizationInfo.current_weapon]+"idle.png"
         idle = "Sprites\player_idle.png"
         # This will hold all arrays of sprites animations, important ones are the idle, shoot, and moving. A single animation may need more than one sprite so we use arrays
         self.idle_sprites = [idle]

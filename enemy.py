@@ -139,8 +139,6 @@ class Shooter:
         pass
             
         self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
-        # Replace this with the pygame.display from the main gameloop!    
-        # display.set_mode(10).blit(self.entity , self.entity_collider) 
     
     def __del__(self):
         pass
@@ -465,7 +463,6 @@ class Bomber:
             self.shootBomb(target_pos)    
             
         self.entity_collider = self.entity.get_rect(center = (round(self.pos.x), round(self.pos.y)))
-        # Replace this with the pygame.display from the main gameloop!        
     def __del__(self):
         pass
 
@@ -555,7 +552,6 @@ class EnemyBomb:
                 self.bomb_collider.center = [self.target_pos.x , self.target_pos.y]
                 self.animateExplode()
                 
-        # Use level bounds to call explode()
         pass
     
     def animateExplode(self):
