@@ -5,14 +5,12 @@ import levelcontrolparameters
 '''Code for the ship customization game state.
 Specific attributes:
 current_engine- the index of the current engine the user has selected.
-current_weapon- the index of the current weapon the user has selected.
 options_engine- a list of the total engine options.
 options_weapon- a list of the total weapon options.
 options_confirm- a list of the total confirmation options (of which there should only be one,
 although its length is still equal to that of the other menus for the purposes of easier
 text positioning).
 options_menus- a list of the menus the user will be able to navigate.
-current_menu- the index of the current menu the user is in.
 current_choices- a list of the indices of the current components the user has selected.
 position- the current option the user is hovering over within the current menu.
 descriptions_engines- a list of short description lists for each engine.
@@ -23,14 +21,12 @@ descriptions_- a list containing both major flavor text lists.
 class customization(generic_state):
     def __init__(self):
         super(customization, self).__init__()
-        self.current_engine = 0
-        self.current_weapon = 0
         self.options_engine = ["ENG1", "ENG2", "ENG3"]
         self.options_weapon = ["WPN1", "WPN2", "WPN3"]
         self.options_confirm = ["", "Fight!", ""]
         self.options_menus = [self.options_engine, self.options_weapon, self.options_confirm]
         self.current_menu = 0
-        self.current_choices = [self.current_engine, self.current_weapon]
+        self.current_choices = [0, 0]
         self.position = 0
         self.descriptions_engines = [
             ["An engine well suited for daring maneuvers.", "Faster movement, but lower health."],
@@ -153,3 +149,7 @@ class customization(generic_state):
 
         instruction_text_display = self.color_instruction_text()
         surface.blit(instruction_text_display, self.place_instruction_text(instruction_text_display))
+
+        player_sprite = pygame.image.load("Sprites\player_weapon"+str(self.current_choices[1])+"_engine"+str(self.current_choices[0])+".png")
+        player_position = (self.screen_rect.center[0], self.screen_rect.center[1])
+        surface.blit(player_sprite, player_position)
