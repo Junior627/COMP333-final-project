@@ -15,7 +15,7 @@ current_choices- a list of the indices of the current components the user has se
 position- the current option the user is hovering over within the current menu.
 descriptions_engines- a list of short description lists for each engine.
 descriptions_weapons- a list of short description lists for each weapon.
-descriptions_- a list containing both major flavor text lists.
+descriptions- a list containing both major flavor text lists.
 '''
 
 class customization(generic_state):
@@ -43,6 +43,9 @@ class customization(generic_state):
     
     def color_text(self, menu, index):
         '''Code for text coloration
+        Args: menu- used to determine the menu of the text being colored.
+        index- used to determine the text being colored.
+        Returns: a surface containing the text after coloration.
         '''
         if menu != 2:
             if (self.current_menu == menu) and (self.position == index):
@@ -64,17 +67,25 @@ class customization(generic_state):
     
     def color_instruction_text(self):
         '''Code for instruction text coloration
+        Returns: a surface containing the instruction text after coloration.
         '''
         return self.captionfont.render("Arrow keys to move, space to select/shoot, esc to go back", True, pygame.Color("white"))
     
     def color_flavor_text(self, menu, index):
         '''Code for flavor text coloration
+        Args: menu- used to determine the menu of the flavor text being colored.
+        index- used to determine the flavor text being colored.
+        Returns: a surface containing the flavor text after coloration.
         '''
         return self.captionfont.render(self.descriptions[menu][self.current_choices[menu]][index], True, pygame.Color("white"))
 
     def place_text(self, text, menu, index):
         '''Code for text placement
-        '''
+        Args: text- a surface containing the colored text.
+        menu- used to determine the menu of the text being placed.
+        index- used to determine the text being placed.
+        Returns: a surface containing the colored text in the correct position.
+        ''' 
         if menu == 2:
             menu_location = 4
         else:
@@ -85,18 +96,25 @@ class customization(generic_state):
     
     def place_instruction_text(self, text):
         '''Code for instruction text placement
+        Args: text- a surface containing the colored instruction text.
+        Returns: a surface containing the colored instruction text in the correct position.
         '''
         center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + 300)
         return text.get_rect(center = center_location)
     
     def place_flavor_text(self, text, menu, index):
         '''Code for flavor text placement
+        Args: text- a surface containing the colored flavor text.
+        menu- used to determine the menu of the flavor text being placed.
+        index- used to determine the flavor text being placed.
+        Returns: a surface containing the colored flavor text in the correct position.
         '''
         center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (100 * (menu - 1)) + (25 * index) - 115)
         return text.get_rect(center = center_location)
 
     def get_event(self, event):
         '''Code for handling events in the ship customization menu game state
+        Args: event- the event to be handled.
         '''
         if event.type == pygame.QUIT:
             self.quit = True
@@ -129,11 +147,13 @@ class customization(generic_state):
         self.done = True
 
     def startup(self):
+        '''Code for customization menu state specific initialization.
+        '''
         self.next_state = "shipgame"
 
     def draw(self, surface):
         '''Code for screen display in the ship customization game state.
-        Depending on the combination of engine and weapon, we pull the appropiate sprite from the files
+        Args: surface- the current surface.
         '''
         surface.fill(pygame.Color("black"))
         for menu in range(2):

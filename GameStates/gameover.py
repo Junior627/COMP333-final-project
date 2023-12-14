@@ -21,6 +21,7 @@ class gameover(generic_state):
 
     def get_event(self, event):
         '''Code for handling events in the game over menu game state
+        Args: event- the event to be handled.
         '''
         if event.type == pygame.QUIT:
             self.quit = True
@@ -38,6 +39,7 @@ class gameover(generic_state):
 
     def draw(self, surface):
         '''Code for screen display in the game over menu game state
+        Args: surface- the current surface.
         '''
         surface.fill(pygame.Color("black"))
         surface.blit(self.game_over_text, self.game_over_text_position)

@@ -59,6 +59,10 @@ class shipgame(generic_state):
         self.next_state = "gameover"
 
     def spawn_enemies(self, level):
+        '''Code for spawning enemies. 
+        Depends on the level the user has selected- see self.enemies_spawning above.
+        Args: level- the current level the user has selected.
+        '''
         shooters, bombers, chasers = self.enemies_spawning[level]
         x = 0
         while x < shooters:
@@ -74,6 +78,11 @@ class shipgame(generic_state):
             z+= 1
 
     def startup(self):
+        '''Code for ship game state specific initialization.
+        Resets the player's stats, health, and position.
+        Clears already existing ships and bullets.
+        Spawns enemies according to the current level.
+        '''
         self.player.initStats(levelcontrolparameters.weapon_choice, levelcontrolparameters.engine_choice)
         self.player.pos = pygame.Vector2(self.screen_rect.width / 2 , (self.screen_rect.height * 3) / 4)
         self.enemies = []
@@ -92,20 +101,25 @@ class shipgame(generic_state):
     
     def get_event(self, event):
         '''Code for handling events in the ship game state.
+        Args: event- the event to be handled.
         '''
         if event.type == pygame.QUIT:
             self.quit = True
 
     def displayHealth(self, surface):
+        '''Code for displaying the user's current health.
+        Args: surface- the current surface.
+        '''
         x = 0
         for healthPoint in range(self.player.health) :
             surface.blit(self.healthSprite, (x * 24, 740))
             x+=1
 
     def draw(self, surface):
-        '''Code for screen display in the ship game state. Includes a bit of logic that was difficult
-        to include elsewhere thanks to the use of get_pressed instead of keydown.
-        Much of this code taken from test.py.
+        '''Code for screen display in the ship game state. Includes a good bit of logic that was difficult
+        to include elsewhere thanks to the use of get_pressed instead of keydown- something no other game state does.
+        Essentially all of this code taken from test.py.
+        Args: surface- the current surface.
         '''
         surface.blit(self.backdrops[levelcontrolparameters.current_level], (0,0))
 
