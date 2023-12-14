@@ -1,9 +1,7 @@
 from pygame import *
 from constants import *
 '''
-This file will contain all logic for the player and how the player controls their ship
-
-Currently using a test.py file to incorporate this stuff. Once the gameloop is figured out, i will convert the stuff to the main file
+Contains all logic for the player and how the player controls their ship.
 '''
 
 class Player:
@@ -29,7 +27,10 @@ class Player:
         # Parameters for pygame interactivity        
         pass
     def initStats(self, weapon_choice, engine_choice):
-        
+        '''Initializes the player's stats.
+        Args: weapon_choice- the player's weapon.
+        engine_choice- the player's engine.
+        '''
         self.entity = image.load("Sprites\player_weapon"+str(weapon_choice)+"_engine"+str(engine_choice)+".png")
         self.entity_collider  = self.entity.get_rect()
         
@@ -76,7 +77,7 @@ class Player:
         self.bullet_cooldown = self.BULLET_CONSTANT
         self.invincibility_window = self.INVIN_CONSTANT
     def takeDamage(self) :
-        ''' If the player's invincibility window is over
+        ''' If the player's invincibility window is over, causes the player to take damage.
         
         '''
         
@@ -141,12 +142,12 @@ class Player:
     
 class PlayerBullet:
     def __init__(self, initial_pos , bullet_speed):
-        ''' Create an instance
+        ''' Create an instance of a player bullet.
         
         '''
         self.pos = Vector2(initial_pos )
         self.bullet_speed = bullet_speed
-        self.bullet = image.load('Sprites\player_bullet.png') # Make sure this is the appropiate filepath for player's bullet
+        self.bullet = image.load('Sprites\player_bullet.png')
         self.bullet_collider = self.bullet.get_rect()
         self.bullet_dir = Vector2()
         self.bullet_dir.x = 0
@@ -160,6 +161,9 @@ class PlayerBullet:
         self.pos.y -=  ( self.bullet_speed) # It takes away 1 since we want the bullet to go straight up
         self.bullet_collider = self.bullet_collider.move(self.pos.x - self.bullet_collider.x, self.pos.y - self.bullet_collider.y)
     def out_of_bounds(self):
+        '''Checks whether the player bullet is out of bounds.
+        Returns: true if it is out of bounds, false otherwise
+        '''
         return self.pos[0] < 0 or self.pos[0] > SCREEN_WIDTH or self.pos[1] <0 or self.pos[1] > SCREEN_HEIGHT
     def __del__(self):
         '''The bullet will destroy itself if it hits an enemy or an edge of the screen.'''
