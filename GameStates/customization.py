@@ -15,6 +15,9 @@ options_menus- a list of the menus the user will be able to navigate.
 current_menu- the index of the current menu the user is in.
 current_choices- a list of the indices of the current components the user has selected.
 position- the current option the user is hovering over within the current menu.
+descriptions_engines- a list of short description lists for each engine.
+descriptions_weapons- a list of short description lists for each weapon.
+descriptions_- a list containing both major flavor text lists.
 '''
 
 class customization(generic_state):
@@ -29,6 +32,17 @@ class customization(generic_state):
         self.current_menu = 0
         self.current_choices = [self.current_engine, self.current_weapon]
         self.position = 0
+        self.descriptions_engines = [
+            ["An engine well suited for daring maneuvers.", "Faster movement, but lower health."],
+            ["An engine well suited for any situation.", "Balanced stats."],
+            ["An engine well suited for prolonged combat.", "Higher health, but slower movement."]
+        ]
+        self.descriptions_weapons = [
+            ["A light gun well suited for rapid fire.", "Faster bullets and shorter recharge, but lower damage."],
+            ["A medium gun well suited for any situation.", "Balanced stats."],
+            ["A heavy gun well suited for maximum destruction.", "Higher damage, but slower bullets and longer recharge."]
+        ]
+        self.descriptions = [self.descriptions_engines, self.descriptions_weapons]
         self.next_state = "shipgame"
     
     def color_text(self, menu, index):
@@ -57,6 +71,11 @@ class customization(generic_state):
         '''
         return self.captionfont.render("Arrow keys to move, space to select/shoot, esc to go back", True, pygame.Color("white"))
     
+    def color_flavor_text(self, menu, index):
+        '''Code for flavor text coloration
+        '''
+        return self.captionfont.render(self.descriptions[menu][self.current_choices[menu]][index], True, pygame.Color("white"))
+
     def place_text(self, text, menu, index):
         '''Code for text placement
         '''
@@ -74,6 +93,12 @@ class customization(generic_state):
         center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + 300)
         return text.get_rect(center = center_location)
     
+    def place_flavor_text(self, text, menu, index):
+        '''Code for flavor text placement
+        '''
+        center_location = (self.screen_rect.center[0], self.screen_rect.center[1] + (100 * (menu - 1)) + (25 * index) - 115)
+        return text.get_rect(center = center_location)
+
     def get_event(self, event):
         '''Code for handling events in the ship customization menu game state
         '''
@@ -119,9 +144,12 @@ class customization(generic_state):
             for index in range(len(self.options_menus[menu])):
                 text_display = self.color_text(menu, index)
                 surface.blit(text_display, self.place_text(text_display, menu, index))
+                for text_row in range(2):
+                    flavor_text_display = self.color_flavor_text(menu, text_row)
+                    surface.blit(flavor_text_display, self.place_flavor_text(flavor_text_display, menu, text_row))
 
-        text_display = self.color_text(2, 1)
-        surface.blit(text_display, self.place_text(text_display, 2, 1))
+        fight_text_display = self.color_text(2, 1)
+        surface.blit(fight_text_display, self.place_text(fight_text_display, 2, 1))
 
-        text_display = self.color_instruction_text()
-        surface.blit(text_display, self.place_instruction_text(text_display))
+        instruction_text_display = self.color_instruction_text()
+        surface.blit(instruction_text_display, self.place_instruction_text(instruction_text_display))
