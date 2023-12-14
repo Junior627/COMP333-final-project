@@ -1,3 +1,10 @@
+'''This code was initially used to test things in the ship game state
+before the ship game state was completed. Now, it currently isn't used
+for anything, and it should not be called anywhere upon the project being
+run.
+'''
+
+
 import pygame
 from player import *
 from enemy import *
